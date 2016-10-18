@@ -26,6 +26,21 @@ d3.json("data/us-states.json", function(collection) {
       .attr("d", path);
 });
 
+function sumArrayCSV(array,prop,condition) {
+  var sum = 0;
+  for (i=0; i<array.length; i++) {
+    sum += parseFloat(array[i][prop]);
+  }
+  return sum;
+}
+
+d3.csv("data/passengers-summarized.csv", function(fare) {
+  var sum = sumArrayCSV(fare,'Passengers');
+
+  // var radius = d3.scale.sqrt()
+  //             .domain([0,])
+});
+
 // d3.csv("flights-airport.csv", function(flights) {
 //   var linksByOrigin = {},
 //       countByAirport = {},
