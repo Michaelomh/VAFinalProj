@@ -19,7 +19,7 @@ var circles = svg.append("svg:g")
 var cells = svg.append("svg:g")
     .attr("id", "cells");
 
-d3.json("js/us-states.json", function(collection) {
+d3.json("data/us-states.json", function(collection) {
   states.selectAll("path")
       .data(collection.features)
     .enter().append("svg:path")
