@@ -28,19 +28,49 @@ d3.json("data/us-states.json", function(collection) {
       .attr("d", path);
 });
 
-function sumArrayCSV(array,prop) {
-  var sum = 0;
-  for (i=0; i<array.length; i++) {
-    sum += parseFloat(array[i][prop]);
-  }
-  return sum;
+// sample date (please insert later) = [startDate, endDate]
+var dateArr = [new Date(1996, 0, 1), new Date(1996, 11, 30)];
+
+function getQuarter(d) {
+  d = d || new Date();
+  var m = Math.floor(d.getMonth()/3) + 2;
+  return m > 4? m - 4 : m;
 }
 
-d3.csv("data/passengers-summarized.csv", function(fare) {
-  var sum = sumArrayCSV(fare,'Passengers');
+function statesSumArrByTime(array, prop, dateStart, dateEnd) {
+  var sum = parseFloat(array[0][prop]);
+  var arr = [];
+  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
+
+  // array has to be sorted by states-from, states-to
+  for (i=1; i<array.length; i++) {
+    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
+    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
+      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
+
+      if (statesCurrent.toString() !== statesParsed.toString()) {
+        var currentStateArr = statesParsed.slice(0);
+        currentStateArr.push(sum);
+        arr.push(currentStateArr);
+        statesParsed = statesCurrent;
+        sum = parseFloat(array[i][prop]);
+      } else {
+        sum += parseFloat(array[i][prop]);
+      }
+    }
+  }
+  return arr;
+  // should return [[state-from, state-to, sum],[],...]
+}
+
+d3.csv("data/passengers-summarized.csv", function(data) {
 
   // var radius = d3.scale.sqrt()
-  //             .domain([0,])
+  //             .domain([0,]
+
+  //needs input from crossfilter
+  var displayArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
+  console.log(displayArr);
 });
 
 d3.json("data/us-states-centroids.json", function(json) {
