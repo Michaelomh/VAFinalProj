@@ -21,21 +21,37 @@ var circles = svg.append("svg:g")
 var cells = svg.append("svg:g")
     .attr("id", "cells");
 
+// var stateFrom = d3.select("#stateFrom");
+
+// var stateTo = d3.select("#stateTo");
+
+var stateFrom = svg.append("text")
+                .attr("x", 0)
+                .attr("y", h + 10)
+                .attr("class", "legend")
+                .style("fill", "black")
+                .on("click", function() {
+                  this.text("")
+                })
+                .text("Select a state")
+
 d3.json("data/us-states.json", function(collection) {
   states.selectAll("path")
       .data(collection.features)
     .enter().append("svg:path")
-      .attr("d", path);
+      .attr("d", path)
+      .on("mouseover", function(d) {
+        d3.select(this)
+          .style("fill", "orange")
+      })
+      .on("mouseout", function(d) {
+        d3.select(this)
+          .style("fill", "#ccc")
+      })
 });
 
 // sample date (please insert later) = [startDate, endDate]
 var dateArr = [new Date(1996, 0, 1), new Date(1996, 11, 30)];
-
-function getQuarter(d) {
-  d = d || new Date();
-  var m = Math.floor(d.getMonth()/3) + 2;
-  return m > 4? m - 4 : m;
-}
 
 function statesSumArrByTime(array, prop, dateStart, dateEnd) {
   var sum = parseFloat(array[0][prop]);
