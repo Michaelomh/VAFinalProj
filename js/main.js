@@ -1,5 +1,5 @@
-var w = 1280,
-    h = 800;
+var w = 980,
+    h = 600;
 
 var projection = d3.geoAlbersUsa();
 
@@ -26,28 +26,44 @@ var cells = svg.append("svg:g")
 // var stateTo = d3.select("#stateTo");
 
 var stateFrom = svg.append("text")
-                .attr("x", 0)
-                .attr("y", h + 10)
+                .attr("x", 130)
+                .attr("y", h-60)
                 .attr("class", "legend")
                 .style("fill", "black")
-                .on("click", function() {
-                  this.text("")
-                })
-                .text("Select a state")
+                .text("Select a state");
+
+var chosenStateFrom = "";
+var chosenStateTo = "";
+
+function getKeyByValue(obj,value) {
+  for( var prop in obj ) {
+        if( obj.hasOwnProperty( prop ) ) {
+             if( obj[ prop ] === value )
+                 return prop;
+        }
+    }
+}
 
 d3.json("data/us-states.json", function(collection) {
   states.selectAll("path")
       .data(collection.features)
-    .enter().append("svg:path")
+    .enter()
+      .append("svg:path")
       .attr("d", path)
       .on("mouseover", function(d) {
         d3.select(this)
-          .style("fill", "orange")
+          .style("fill", "orange");
+        chosenStateTo = getKeyByValue(statesHash, d.properties.name);
       })
       .on("mouseout", function(d) {
         d3.select(this)
-          .style("fill", "#ccc")
+          .style("fill", "#ccc");
+        chosenStateTo = "";
       })
+      .on("click", function(d) {
+        chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
+        stateFrom.text(d.properties.name);
+      });
 });
 
 // sample date (please insert later) = [startDate, endDate]
