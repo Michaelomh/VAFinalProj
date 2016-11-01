@@ -3,6 +3,10 @@ var w = 980,
 
 var projection = d3.geoAlbersUsa();
 
+var hoverBgColor = '#E98333';
+var defaultBgColor = '#cccccc';
+var clickBgColor = '#D96531';
+
 var path = d3.geoPath()
     .projection(projection);
 
@@ -44,25 +48,76 @@ function getKeyByValue(obj,value) {
     }
 }
 
+function updateText(svg,text) {
+  svg.text(text);
+}
+
+function currentColor(svg) {
+  return rgb2hex(d3.select(svg).style("fill"));
+}
+
+function clickedEle(svg) {
+  return d3.select(svg).attr("clicked") === "true" ;
+}
+
+function rgb2hex(rgb){
+ rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+ return (rgb && rgb.length === 4) ? "#" +
+  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+}
+
 d3.json("data/us-states.json", function(collection) {
+  var previousChosenState;
+
   states.selectAll("path")
       .data(collection.features)
     .enter()
       .append("svg:path")
       .attr("d", path)
+      .attr("clicked", "false")
       .on("mouseover", function(d) {
-        d3.select(this)
-          .style("fill", "orange");
-        chosenStateTo = getKeyByValue(statesHash, d.properties.name);
+        // console.log(currentColor(this));
+        // console.log(currentColor(this) !== clickBgColor);
+        if (!clickedEle(this)) {
+          d3.select(this)
+          .style("fill", hoverBgColor);
+        }
+
+        if (chosenStateFrom) {
+          chosenStateTo = getKeyByValue(statesHash, d.properties.name);
+          updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+        }
       })
       .on("mouseout", function(d) {
-        d3.select(this)
-          .style("fill", "#ccc");
-        chosenStateTo = "";
+        // console.log(currentColor(this) !== clickBgColor);
+        if (!clickedEle(this)) {
+          d3.select(this)
+          .style("fill", defaultBgColor);
+        };
+        if (chosenStateFrom) {
+          chosenStateTo = getKeyByValue(statesHash, d.properties.name);
+          updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+        }
       })
       .on("click", function(d) {
+        // if (previousChosenState) {
+        //   d3.select(previousChosenState).attr("clicked", false);
+        // }
+        // console.log((states.selectAll("path").attr("clicked")));
+        // console.log(this.attr("clicked"));
+
+        // previousChosenState = d;
+        states.selectAll("path")
+          .attr("clicked", "false")
+          .style("fill", defaultBgColor);
+
+        d3.select(this)
+          .attr("clicked", "true")
+          .style("fill", clickBgColor);
         chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
-        stateFrom.text(d.properties.name);
+        updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
       });
 });
 
