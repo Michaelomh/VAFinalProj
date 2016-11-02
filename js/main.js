@@ -38,7 +38,7 @@ var passengersDisplay;
 var fareDisplay;
 
 // sample date (please insert later) = [startDate, endDate]
-var dateArr = [new Date(1996, 0, 1), new Date(1996, 11, 30)];
+var dateArr = [new Date(2010, 0, 1), new Date(2015, 11, 30)];
 
 
 ///// Utility Functions
@@ -86,6 +86,7 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
+// DO I NEED TO CHANGE THE WAY I SUM? CURRENTLY I JUST ADD ALL TOGETHER. SHOULD I DIVIDE & MULTIPLY BY TOTAL DAYS?
 function statesSumArrByTime(array, prop, dateStart, dateEnd) {
   var sum = parseFloat(array[0][prop]);
   var arr = [];
