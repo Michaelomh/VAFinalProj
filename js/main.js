@@ -25,11 +25,7 @@ var circles = svg.append("svg:g")
 var cells = svg.append("svg:g")
     .attr("id", "cells");
 
-// var stateFrom = d3.select("#stateFrom");
-
-// var stateTo = d3.select("#stateTo");
-
-var stateFrom = svg.append("text")
+var display = svg.append("text")
                 .attr("x", 130)
                 .attr("y", h-60)
                 .attr("class", "legend")
@@ -38,6 +34,16 @@ var stateFrom = svg.append("text")
 
 var chosenStateFrom = "";
 var chosenStateTo = "";
+var passengersDisplay;
+var fareDisplay;
+
+
+///// Utilitiy Functions
+
+function searchHash(key1, key2, hash) {
+  var keyToFind = key1 + key2;
+  return hash[keyToFind];
+}
 
 function getKeyByValue(obj,value) {
   for( var prop in obj ) {
@@ -60,6 +66,15 @@ function clickedEle(svg) {
   return d3.select(svg).attr("clicked") === "true" ;
 }
 
+function arrToHash(arr) {
+  var objHash = {};
+  for (i=0;i<arr.length;i++) {
+    var hashKey = arr[i][0] + arr[i][1];
+    objHash[hashKey] = arr[i][2];
+  }
+  return objHash;
+}
+
 function rgb2hex(rgb){
  rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
  return (rgb && rgb.length === 4) ? "#" +
@@ -68,8 +83,34 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
+
+
+
 d3.json("data/us-states.json", function(collection) {
-  var previousChosenState;
+  var passengersHash;
+  var fareHash;
+  d3.csv("data/passengers-summarized.csv", function(data) {
+
+    // var radius = d3.scale.sqrt()
+    //             .domain([0,]
+
+    //needs input from crossfilter
+    var passengersArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
+    // console.log(passengersArr);
+    passengersHash = arrToHash(passengersArr);
+    // console.log(passengersHash);
+  });
+
+  d3.csv("data/fare-summarized.csv", function(data) {
+
+    // var radius = d3.scale.sqrt()
+    //             .domain([0,]
+
+    //needs input from crossfilter
+    var fareArr = statesAvgArrByTime(data, 'Avg. Fare', dateArr[0], dateArr[1]);
+    // console.log(fareArr);
+    fareHash = arrToHash(fareArr);
+  });
 
   states.selectAll("path")
       .data(collection.features)
@@ -78,8 +119,6 @@ d3.json("data/us-states.json", function(collection) {
       .attr("d", path)
       .attr("clicked", "false")
       .on("mouseover", function(d) {
-        // console.log(currentColor(this));
-        // console.log(currentColor(this) !== clickBgColor);
         if (!clickedEle(this)) {
           d3.select(this)
           .style("fill", hoverBgColor);
@@ -87,28 +126,27 @@ d3.json("data/us-states.json", function(collection) {
 
         if (chosenStateFrom) {
           chosenStateTo = getKeyByValue(statesHash, d.properties.name);
-          updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+          var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
+          var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
+          fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
+          passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
+          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
+                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
         }
       })
+
       .on("mouseout", function(d) {
-        // console.log(currentColor(this) !== clickBgColor);
         if (!clickedEle(this)) {
           d3.select(this)
           .style("fill", defaultBgColor);
         };
         if (chosenStateFrom) {
           chosenStateTo = getKeyByValue(statesHash, d.properties.name);
-          updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo);
         }
       })
-      .on("click", function(d) {
-        // if (previousChosenState) {
-        //   d3.select(previousChosenState).attr("clicked", false);
-        // }
-        // console.log((states.selectAll("path").attr("clicked")));
-        // console.log(this.attr("clicked"));
 
-        // previousChosenState = d;
+      .on("click", function(d) {
         states.selectAll("path")
           .attr("clicked", "false")
           .style("fill", defaultBgColor);
@@ -117,7 +155,7 @@ d3.json("data/us-states.json", function(collection) {
           .attr("clicked", "true")
           .style("fill", clickBgColor);
         chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
-        updateText(stateFrom, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+        updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo);
       });
 });
 
@@ -181,25 +219,7 @@ function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
   // should return [[state-from, state-to, avg],[],...]
 }
 
-d3.csv("data/passengers-summarized.csv", function(data) {
 
-  // var radius = d3.scale.sqrt()
-  //             .domain([0,]
-
-  //needs input from crossfilter
-  var displayArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
-  console.log(displayArr);
-});
-
-d3.csv("data/fare-summarized.csv", function(data) {
-
-  // var radius = d3.scale.sqrt()
-  //             .domain([0,]
-
-  //needs input from crossfilter
-  var displayArr = statesAvgArrByTime(data, 'Avg. Fare', dateArr[0], dateArr[1]);
-  console.log(displayArr);
-});
 
 d3.json("data/us-states-centroids.json", function(json) {
 
