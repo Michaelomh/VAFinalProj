@@ -37,8 +37,11 @@ var chosenStateTo = "";
 var passengersDisplay;
 var fareDisplay;
 
+// sample date (please insert later) = [startDate, endDate]
+var dateArr = [new Date(1996, 0, 1), new Date(1996, 11, 30)];
 
-///// Utilitiy Functions
+
+///// Utility Functions
 
 function searchHash(key1, key2, hash) {
   var keyToFind = key1 + key2;
@@ -82,6 +85,64 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
+
+function statesSumArrByTime(array, prop, dateStart, dateEnd) {
+  var sum = parseFloat(array[0][prop]);
+  var arr = [];
+  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
+
+  // array has to be sorted by states-from, states-to
+  for (i=1; i<array.length; i++) {
+    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
+    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
+      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
+
+      if (statesCurrent.toString() !== statesParsed.toString()) {
+        var currentStateArr = statesParsed.slice(0);
+        currentStateArr.push(sum);
+        arr.push(currentStateArr);
+        statesParsed = statesCurrent;
+        sum = parseFloat(array[i][prop]);
+      } else {
+        sum += parseFloat(array[i][prop]);
+      }
+    }
+  }
+  return arr;
+  // should return [[state-from, state-to, sum],[],...]
+}
+
+function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
+  var sumArr = [parseFloat(array[0][prop])];
+  var arr = [];
+  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
+
+  // array has to be sorted by states-from, states-to
+
+  for (i=1; i<array.length; i++) {
+    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
+    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
+      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
+
+      if (statesCurrent.toString() !== statesParsed.toString()) {
+        var currentStateArr = statesParsed.slice(0);
+        var sumArrLength = sumArr.length;
+        var avg = sumArr.reduce(function(a,b) {
+                        return a + b;
+                      }, 0) / sumArrLength;
+        currentStateArr.push(avg);
+        arr.push(currentStateArr);
+        statesParsed = statesCurrent;
+        sumArr = [parseFloat(array[i][prop])];
+      } else {
+        sumArr.push(parseFloat(array[i][prop]));
+      }
+    }
+  }
+  return arr;
+  // should return [[state-from, state-to, avg],[],...]
+}
+
 
 
 
@@ -158,67 +219,6 @@ d3.json("data/us-states.json", function(collection) {
         updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo);
       });
 });
-
-// sample date (please insert later) = [startDate, endDate]
-var dateArr = [new Date(1996, 0, 1), new Date(1996, 11, 30)];
-
-function statesSumArrByTime(array, prop, dateStart, dateEnd) {
-  var sum = parseFloat(array[0][prop]);
-  var arr = [];
-  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
-
-  // array has to be sorted by states-from, states-to
-  for (i=1; i<array.length; i++) {
-    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
-    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
-      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
-
-      if (statesCurrent.toString() !== statesParsed.toString()) {
-        var currentStateArr = statesParsed.slice(0);
-        currentStateArr.push(sum);
-        arr.push(currentStateArr);
-        statesParsed = statesCurrent;
-        sum = parseFloat(array[i][prop]);
-      } else {
-        sum += parseFloat(array[i][prop]);
-      }
-    }
-  }
-  return arr;
-  // should return [[state-from, state-to, sum],[],...]
-}
-
-function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
-  var sumArr = [parseFloat(array[0][prop])];
-  var arr = [];
-  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
-
-  // array has to be sorted by states-from, states-to
-
-  for (i=1; i<array.length; i++) {
-    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
-    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
-      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
-
-      if (statesCurrent.toString() !== statesParsed.toString()) {
-        var currentStateArr = statesParsed.slice(0);
-        var sumArrLength = sumArr.length;
-        var avg = sumArr.reduce(function(a,b) {
-                        return a + b;
-                      }, 0) / sumArrLength;
-        currentStateArr.push(avg);
-        arr.push(currentStateArr);
-        statesParsed = statesCurrent;
-        sumArr = [parseFloat(array[i][prop])];
-      } else {
-        sumArr.push(parseFloat(array[i][prop]));
-      }
-    }
-  }
-  return arr;
-  // should return [[state-from, state-to, avg],[],...]
-}
-
 
 
 d3.json("data/us-states-centroids.json", function(json) {
