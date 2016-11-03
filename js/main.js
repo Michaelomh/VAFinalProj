@@ -204,7 +204,8 @@ d3.json("data/us-states.json", function(collection) {
         };
         if (chosenStateFrom) {
           chosenStateTo = getKeyByValue(statesHash, d.properties.name);
-          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
+                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
         }
       })
 
@@ -217,7 +218,12 @@ d3.json("data/us-states.json", function(collection) {
           .attr("clicked", "true")
           .style("fill", clickBgColor);
         chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
-        updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo);
+        var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
+        var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
+        fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
+        passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
+        updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
+                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
       });
 });
 
