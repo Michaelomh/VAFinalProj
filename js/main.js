@@ -110,6 +110,7 @@ Date.quartersBetweenInDays = function( date1, date2 ) {
   if (date2 > date1) {
     var dateInYears = [ date1.getFullYear(), date2.getFullYear() ];
     var dateInQuarters = [ Math.floor((date1.getMonth())/3)+1, Math.floor((date2.getMonth())/3)+1 ];
+    console.log(dateInQuarters);
     var yearsDiff = dateInYears[1] - dateInYears[0];
     if (yearsDiff === 0) {
       return ( Math.abs(dateInQuarters[0] - dateInQuarters[1]) + 1 ) * 91;
@@ -211,56 +212,56 @@ d3.json("data/us-states.json", function(collection) {
   });
 
   states.selectAll("path")
-      .data(collection.features)
+    .data(collection.features)
     .enter()
-      .append("svg:path")
-      .attr("d", path)
-      .attr("clicked", "false")
-      .on("mouseover", function(d) {
-        if (!clickedEle(this)) {
-          d3.select(this)
-          .style("fill", hoverBgColor);
-        }
-
-        if (chosenStateFrom) {
-          chosenStateTo = getKeyByValue(statesHash, d.properties.name);
-          var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
-          var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
-          fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
-          passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
-          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
-                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
-        }
-      })
-
-      .on("mouseout", function(d) {
-        if (!clickedEle(this)) {
-          d3.select(this)
-          .style("fill", defaultBgColor);
-        };
-        if (chosenStateFrom) {
-          chosenStateTo = getKeyByValue(statesHash, d.properties.name);
-          updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
-                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
-        }
-      })
-
-      .on("click", function(d) {
-        states.selectAll("path")
-          .attr("clicked", "false")
-          .style("fill", defaultBgColor);
-
+    .append("svg:path")
+    .attr("d", path)
+    .attr("clicked", "false")
+    .on("mouseover", function(d) {
+      if (!clickedEle(this)) {
         d3.select(this)
-          .attr("clicked", "true")
-          .style("fill", clickBgColor);
-        chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
+        .style("fill", hoverBgColor);
+      }
+
+      if (chosenStateFrom) {
+        chosenStateTo = getKeyByValue(statesHash, d.properties.name);
         var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
         var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
         fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
         passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
         updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
-                    + fareDisplay + ", Total Passengers: " + passengersDisplay);
-      });
+                  + fareDisplay + ", Total Passengers: " + passengersDisplay);
+      }
+    })
+
+    .on("mouseout", function(d) {
+      if (!clickedEle(this)) {
+        d3.select(this)
+        .style("fill", defaultBgColor);
+      };
+      if (chosenStateFrom) {
+        chosenStateTo = getKeyByValue(statesHash, d.properties.name);
+        updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
+                  + fareDisplay + ", Total Passengers: " + passengersDisplay);
+      }
+    })
+
+    .on("click", function(d) {
+      states.selectAll("path")
+        .attr("clicked", "false")
+        .style("fill", defaultBgColor);
+
+      d3.select(this)
+        .attr("clicked", "true")
+        .style("fill", clickBgColor);
+      chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
+      var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
+      var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
+      fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
+      passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
+      updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
+                  + fareDisplay + ", Total Passengers: " + passengersDisplay);
+    });
 });
 
 
