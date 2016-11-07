@@ -1,7 +1,11 @@
+// arcs and tooltips
+// dc-js.github.io/dc.js
+
 var w = 980,
     h = 600;
 
-var projection = d3.geoAlbersUsa();
+var projection = d3.geoAlbersUsa()
+                 .scale(w);
 
 var hoverBgColor = '#E98333';
 var defaultBgColor = '#cccccc';
@@ -37,8 +41,9 @@ var chosenStateTo = "";
 var passengersDisplay;
 var fareDisplay;
 
-// sample date (please insert later) = [startDate, endDate]
-var dateArr = [new Date(2010, 0, 1), new Date(2015, 11, 30)];
+
+// sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
+var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
 
 
 ///// Utility Functions
@@ -86,11 +91,42 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
+Date.daysBetween = function( date1, date2 ) {
+  //Get 1 day in milliseconds
+  var one_day=1000*60*60*24;
+
+  // Convert both dates to milliseconds
+  var date1_ms = date1.getTime();
+  var date2_ms = date2.getTime();
+
+  // Calculate the difference in milliseconds
+  var difference_ms = date2_ms - date1_ms;
+
+  // Convert back to days and return
+  return Math.round(difference_ms/one_day);
+}
+
+Date.quartersBetweenInDays = function( date1, date2 ) {
+  if (date2 > date1) {
+    var dateInYears = [ date1.getFullYear(), date2.getFullYear() ];
+    var dateInQuarters = [ Math.floor((date1.getMonth())/3)+1, Math.floor((date2.getMonth())/3)+1 ];
+    var yearsDiff = dateInYears[1] - dateInYears[0];
+    if (yearsDiff === 0) {
+      return ( Math.abs(dateInQuarters[0] - dateInQuarters[1]) + 1 ) * 91;
+    } else {
+      return (yearsDiff-1)*365 + (Math.abs(dateInQuarters[0]-5) + dateInQuarters[1])*91;
+    }
+  } else {
+    throw date1 + " has to be less than " + date2;
+  }
+}
+
 // DO I NEED TO CHANGE THE WAY I SUM? CURRENTLY I JUST ADD ALL TOGETHER. SHOULD I DIVIDE & MULTIPLY BY TOTAL DAYS?
 function statesSumArrByTime(array, prop, dateStart, dateEnd) {
   var sum = parseFloat(array[0][prop]);
   var arr = [];
   var statesParsed = [array[0]['State-from'], array[0]['State-to']];
+  var daysBetween = Date.quartersBetweenInDays(dateStart, dateEnd);
 
   // array has to be sorted by states-from, states-to
   for (i=1; i<array.length; i++) {
