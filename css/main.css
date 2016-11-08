@@ -95,31 +95,39 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-   #states path {
-     fill: #ccc;
-     stroke: #fff;
-   }
+#states path {
+ fill: #ccc;
+ stroke: #fff;
+}
 
-   path.arc {
-     pointer-events: none;
-     fill: none;
-     stroke: #000;
-     display: none;
-   }
+path.arc {
+ pointer-events: none;
+ fill: none;
+ stroke: #000;
+ display: none;
+}
 
-   path.cell {
-     fill: none;
-     pointer-events: all;
-   }
+path.cell {
+ fill: none;
+ pointer-events: all;
+}
 
-   circle {
-     fill: steelblue;
-     fill-opacity: .8;
-     stroke: #fff;
-   }
+circle {
+ fill: steelblue;
+ fill-opacity: .8;
+ stroke: #fff;
+}
 
-
-
+.arcs path {
+  stroke-width: 1px;
+  opacity: .5;
+  stroke: tomato;
+  pointer-events: none;
+  fill: none;
+}
+.arcs .great-arc-end{
+  fill: tomato;
+}
 
 
 
