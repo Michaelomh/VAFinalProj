@@ -112,11 +112,11 @@ path.cell {
  pointer-events: all;
 }
 
-circle {
+/*circle {
  fill: steelblue;
  fill-opacity: .8;
  stroke: #fff;
-}
+}*/
 
 .arcs path {
   stroke-width: 1px;

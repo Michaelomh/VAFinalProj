@@ -26,14 +26,15 @@ var states = svg.append("svg:g")
 var circles = svg.append("svg:g")
     .attr("id", "circles");
 
-var arcs = svg.append('g')
-           .attr('class', 'arcs');
+// var arcs = svg.append('g')
+//            .attr('class', 'arcs');
 
 // var arcGroup = arcs.selectAll('.great-arc-group')
 //                 .data(data.arcs).enter()
 //                 .append('g')
 //                 .classed('great-arc-group', true);
 
+var arcsLayer;
 var arcData;
 
 var cells = svg.append("svg:g")
@@ -208,14 +209,96 @@ function getLinksLatLng(arr,fromState) {
   // });
 
   for (j=0; j<links.length; j++) {
-    var sourceTargetArr = [];
+    var sourceTargetObj = {};
     var sourceCoord = centroidsHash[links[j][0]];
     var targetCoord = centroidsHash[links[j][1]];
-    sourceTargetArr.push(sourceCoord[0],sourceCoord[1],targetCoord[0],targetCoord[1]);
-    linksLatLng.push(sourceTargetArr);
+    sourceTargetObj.source_lat = sourceCoord[1];
+    sourceTargetObj.source_lng = sourceCoord[0];
+    sourceTargetObj.target_lat = targetCoord[1];
+    sourceTargetObj.target_lng = targetCoord[0];
+    sourceTargetObj.sourceLocation = [sourceTargetObj.source_lng,sourceTargetObj.source_lat]
+    sourceTargetObj.targetLocation = [sourceTargetObj.target_lng,sourceTargetObj.target_lat];
+    linksLatLng.push(sourceTargetObj);
   }
   return linksLatLng;
 }
+
+var arcs = {
+  bake: function(){
+    // Remove all exisiting arcs
+    if (arcsLayer) svg.selectAll('.arcs').remove();
+
+    // Group for the arcs
+    arcsLayer = svg.append('g')
+        .attr('class','arcs');
+
+    // We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
+    var arc_group = arcsLayer.selectAll('.great-arc-group')
+        .data(arcData).enter()
+          .append('g')
+          .classed('great-arc-group', true);
+
+    // In each group, create a path for each source/target pair.
+    console.log(arc_group);
+    arc_group.append('path')
+      .attr('d', function(d) {
+        console.log(d)
+        return arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 2); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+      });
+
+    // And a circle for each end point
+    arc_group.append('circle')
+        .attr('r', 2)
+        .classed('great-arc-end', true)
+        .attr("transform", function(d) {
+          return "translate(" + arcs.lngLatToPoint(d.targetLocation) + ")";
+        });
+
+  },
+  lngLatToArc: function(d, sourceName, targetName, bend){
+    // If no bend is supplied, then do the plain square root
+    bend = bend || 1;
+
+    // `d[sourceName]` and `d[targetname]` are arrays of `[lng, lat]`
+    // Note, people often put these in lat then lng, but mathematically we want x then y which is `lng,lat`
+    var sourceLngLat = d[sourceName],
+        targetLngLat = d[targetName];
+
+    if (targetLngLat && sourceLngLat) {
+      var sourceXY = projection( sourceLngLat ),
+          targetXY = projection( targetLngLat );
+
+      // Comment this out for production, useful to see if you have any null lng/lat values
+      if (!targetXY) console.log(d, targetLngLat, targetXY)
+      var sourceX = sourceXY[0],
+          sourceY = sourceXY[1];
+
+      var targetX = targetXY[0],
+          targetY = targetXY[1];
+
+      var dx = targetX - sourceX,
+          dy = targetY - sourceY,
+          dr = Math.sqrt(dx * dx + dy * dy)*bend;
+
+      // To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
+      var west_of_source = (targetX - sourceX) < 0;
+      if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
+      return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
+
+    } else {
+      return "M0,0,l0,0z";
+    }
+  },
+  lngLatToPoint: function(location_array){
+    // Our projection function handles the conversion between lng/lat pairs and svg space
+    // But we put this wrapper around it to handle the even of any empty rows
+    if (location_array) {
+      return projection(location_array);
+    } else {
+      return '0,0';
+    }
+  }
+};
 
 
 d3.json("data/us-states.json", function(collection) {
@@ -223,7 +306,7 @@ d3.json("data/us-states.json", function(collection) {
   var fareHash;
   var passengersArr;
   d3.csv("data/passengers-summarized.csv", function(data) {
-
+    console.log(data);
     // var radius = d3.scale.sqrt()
     //             .domain([0,]
 
@@ -297,6 +380,7 @@ d3.json("data/us-states.json", function(collection) {
       passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
       arcData = getLinksLatLng(passengersArr, chosenStateFrom);
       console.log(arcData);
+      arcs.bake();
       updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
                   + fareDisplay + ", Total Passengers: " + passengersDisplay);
     });
@@ -318,24 +402,24 @@ d3.json("data/us-states-centroids.json", function(json) {
     centroidsHash[stateCode] = stateCoordinates;
   });
 
-  circles.selectAll("circle")
-    .data(json.features)
-    .enter()
-    .append("circle")
-    .attr("r",2)
-    .attr("cx", function(d, i) {
-      // return centroidPositions[i][0];
-      var location = projection([json.features[i].geometry.coordinates[0],json.features[i].geometry.coordinates[1]]);
-      if (location !== null) {
-        return location[0];
-      }
-    })
-    .attr("cy", function(d, i) {
-      var location = projection([json.features[i].geometry.coordinates[0],json.features[i].geometry.coordinates[1]]);
-      if (location !== null) {
-        return location[1];
-      }
-    });
+  // circles.selectAll("circle")
+  //   .data(json.features)
+  //   .enter()
+  //   .append("circle")
+  //   .attr("r",2)
+  //   .attr("cx", function(d, i) {
+  //     // return centroidPositions[i][0];
+  //     var location = projection([json.features[i].geometry.coordinates[0],json.features[i].geometry.coordinates[1]]);
+  //     if (location !== null) {
+  //       return location[0];
+  //     }
+  //   })
+  //   .attr("cy", function(d, i) {
+  //     var location = projection([json.features[i].geometry.coordinates[0],json.features[i].geometry.coordinates[1]]);
+  //     if (location !== null) {
+  //       return location[1];
+  //     }
+  //   });
 });
 
 // d3.csv("flights-airport.csv", function(flights) {
