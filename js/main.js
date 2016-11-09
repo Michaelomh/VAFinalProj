@@ -14,7 +14,7 @@ var clickBgColor = '#D96531';
 var path = d3.geo.path()
     .projection(projection);
 
-var svg = d3.select("body").insert("svg:svg", "h2")
+var svg = d3.select("#map").insert("svg:svg", "h2")
     .attr("width", w)
     .attr("height", h);
 
@@ -198,7 +198,6 @@ function getLinksLatLng(arr,fromState) {
   // input fromState code, eg. "CA"
   var links = [];
   var linksLatLng = [];
-  console.log(arr);
   for (i=0; i<arr.length; i++) {
     if (arr[i][0] === fromState) {
       links.push([arr[i][0], arr[i][1]]);
@@ -207,14 +206,14 @@ function getLinksLatLng(arr,fromState) {
   // d3.json("data/us-states-centroids.json", function(centroids) {
   //   console.log(centroids);
   // });
+
   for (j=0; j<links.length; j++) {
     var sourceTargetArr = [];
-    var sourceCoord = centroidsHash[links[i][0]];
-    var targetCoord = centroidsHash[links[i][1]];
+    var sourceCoord = centroidsHash[links[j][0]];
+    var targetCoord = centroidsHash[links[j][1]];
     sourceTargetArr.push(sourceCoord[0],sourceCoord[1],targetCoord[0],targetCoord[1]);
     linksLatLng.push(sourceTargetArr);
   }
-  console.log(links);
   return linksLatLng;
 }
 
@@ -222,15 +221,14 @@ function getLinksLatLng(arr,fromState) {
 d3.json("data/us-states.json", function(collection) {
   var passengersHash;
   var fareHash;
+  var passengersArr;
   d3.csv("data/passengers-summarized.csv", function(data) {
 
     // var radius = d3.scale.sqrt()
     //             .domain([0,]
 
     //needs input from crossfilter
-    var passengersArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
-    arcData = getLinksLatLng(passengersArr, chosenStateFrom);
-    console.log(arcData);
+    passengersArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
     passengersHash = arrToHash(passengersArr);
     // console.log(passengersHash);
   });
@@ -297,6 +295,8 @@ d3.json("data/us-states.json", function(collection) {
       var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
       fareDisplay = currentAvgFare ? "$" + Math.round(parseFloat(currentAvgFare)*100)/100 : "-";
       passengersDisplay = currentSumPassengers ? Math.round(parseFloat(currentSumPassengers)): "-";
+      arcData = getLinksLatLng(passengersArr, chosenStateFrom);
+      console.log(arcData);
       updateText(display, "From " + chosenStateFrom + ' to ' + chosenStateTo + ", Avg Fare: "
                   + fareDisplay + ", Total Passengers: " + passengersDisplay);
     });
