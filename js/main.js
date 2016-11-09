@@ -4,14 +4,14 @@
 var w = 980,
     h = 600;
 
-var projection = d3.geoAlbersUsa()
+var projection = d3.geo.albersUsa()
                  .scale(w);
 
 var hoverBgColor = '#E98333';
 var defaultBgColor = '#cccccc';
 var clickBgColor = '#D96531';
 
-var path = d3.geoPath()
+var path = d3.geo.path()
     .projection(projection);
 
 var svg = d3.select("body").insert("svg:svg", "h2")
