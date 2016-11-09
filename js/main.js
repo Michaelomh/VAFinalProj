@@ -7,9 +7,9 @@ var w = 980,
 var projection = d3.geo.albersUsa()
                  .scale(w);
 
-var hoverBgColor = '#E98333';
+var hoverBgColor = '#a5a5a5';
 var defaultBgColor = '#cccccc';
-var clickBgColor = '#D96531';
+var clickBgColor = '#777';
 
 var path = d3.geo.path()
     .projection(projection);
@@ -239,10 +239,8 @@ var arcs = {
           .classed('great-arc-group', true);
 
     // In each group, create a path for each source/target pair.
-    console.log(arc_group);
     arc_group.append('path')
       .attr('d', function(d) {
-        console.log(d)
         return arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 2); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
       });
 
@@ -269,7 +267,7 @@ var arcs = {
           targetXY = projection( targetLngLat );
 
       // Comment this out for production, useful to see if you have any null lng/lat values
-      if (!targetXY) console.log(d, targetLngLat, targetXY)
+      // if (!targetXY) console.log(d, targetLngLat, targetXY)
       var sourceX = sourceXY[0],
           sourceY = sourceXY[1];
 
@@ -306,7 +304,7 @@ d3.json("data/us-states.json", function(collection) {
   var fareHash;
   var passengersArr;
   d3.csv("data/passengers-summarized.csv", function(data) {
-    console.log(data);
+    // console.log(data);
     // var radius = d3.scale.sqrt()
     //             .domain([0,]
 
