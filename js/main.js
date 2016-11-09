@@ -26,6 +26,16 @@ var states = svg.append("svg:g")
 var circles = svg.append("svg:g")
     .attr("id", "circles");
 
+var arcs = svg.append('g')
+           .attr('class', 'arcs');
+
+// var arcGroup = arcs.selectAll('.great-arc-group')
+//                 .data(data.arcs).enter()
+//                 .append('g')
+//                 .classed('great-arc-group', true);
+
+var arcData;
+
 var cells = svg.append("svg:g")
     .attr("id", "cells");
 
@@ -36,11 +46,12 @@ var display = svg.append("text")
                 .style("fill", "black")
                 .text("Select a state");
 
+
 var chosenStateFrom = "";
 var chosenStateTo = "";
 var passengersDisplay;
 var fareDisplay;
-
+var centroidsHash = {};
 
 // sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
 var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
@@ -91,26 +102,27 @@ function rgb2hex(rgb){
   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
 }
 
-Date.daysBetween = function( date1, date2 ) {
-  //Get 1 day in milliseconds
-  var one_day=1000*60*60*24;
 
-  // Convert both dates to milliseconds
-  var date1_ms = date1.getTime();
-  var date2_ms = date2.getTime();
+// Date.daysBetween = function( date1, date2 ) {
+//   //Get 1 day in milliseconds
+//   var one_day=1000*60*60*24;
 
-  // Calculate the difference in milliseconds
-  var difference_ms = date2_ms - date1_ms;
+//   // Convert both dates to milliseconds
+//   var date1_ms = date1.getTime();
+//   var date2_ms = date2.getTime();
 
-  // Convert back to days and return
-  return Math.round(difference_ms/one_day);
-}
+//   // Calculate the difference in milliseconds
+//   var difference_ms = date2_ms - date1_ms;
+
+//   // Convert back to days and return
+//   return Math.round(difference_ms/one_day);
+// }
 
 Date.quartersBetweenInDays = function( date1, date2 ) {
   if (date2 > date1) {
     var dateInYears = [ date1.getFullYear(), date2.getFullYear() ];
     var dateInQuarters = [ Math.floor((date1.getMonth())/3)+1, Math.floor((date2.getMonth())/3)+1 ];
-    console.log(dateInQuarters);
+    // console.log(dateInQuarters);
     var yearsDiff = dateInYears[1] - dateInYears[0];
     if (yearsDiff === 0) {
       return ( Math.abs(dateInQuarters[0] - dateInQuarters[1]) + 1 ) * 91;
@@ -182,7 +194,29 @@ function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
 }
 
 
-
+function getLinksLatLng(arr,fromState) {
+  // input fromState code, eg. "CA"
+  var links = [];
+  var linksLatLng = [];
+  console.log(arr);
+  for (i=0; i<arr.length; i++) {
+    if (arr[i][0] === fromState) {
+      links.push([arr[i][0], arr[i][1]]);
+    }
+  }
+  // d3.json("data/us-states-centroids.json", function(centroids) {
+  //   console.log(centroids);
+  // });
+  for (j=0; j<links.length; j++) {
+    var sourceTargetArr = [];
+    var sourceCoord = centroidsHash[links[i][0]];
+    var targetCoord = centroidsHash[links[i][1]];
+    sourceTargetArr.push(sourceCoord[0],sourceCoord[1],targetCoord[0],targetCoord[1]);
+    linksLatLng.push(sourceTargetArr);
+  }
+  console.log(links);
+  return linksLatLng;
+}
 
 
 d3.json("data/us-states.json", function(collection) {
@@ -195,7 +229,8 @@ d3.json("data/us-states.json", function(collection) {
 
     //needs input from crossfilter
     var passengersArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
-    // console.log(passengersArr);
+    arcData = getLinksLatLng(passengersArr, chosenStateFrom);
+    console.log(arcData);
     passengersHash = arrToHash(passengersArr);
     // console.log(passengersHash);
   });
@@ -247,13 +282,16 @@ d3.json("data/us-states.json", function(collection) {
     })
 
     .on("click", function(d) {
+      // reset all fills
       states.selectAll("path")
         .attr("clicked", "false")
         .style("fill", defaultBgColor);
 
+      // set click status and fill
       d3.select(this)
         .attr("clicked", "true")
         .style("fill", clickBgColor);
+
       chosenStateFrom = getKeyByValue(statesHash, d.properties.name);
       var currentAvgFare = searchHash(chosenStateFrom, chosenStateTo, fareHash);
       var currentSumPassengers = searchHash(chosenStateFrom, chosenStateTo, passengersHash);
@@ -268,11 +306,16 @@ d3.json("data/us-states.json", function(collection) {
 d3.json("data/us-states-centroids.json", function(json) {
 
   var centroids = json.features.filter(function(centroid) {
+    // console.log(centroid);
+    var stateName = centroid.properties.name;
+    var stateCode = getKeyByValue(statesHash,stateName);
+    var stateCoordinates = centroid.geometry.coordinates;
     var location = [+centroid.geometry.coordinates[0], +centroid.geometry.coordinates[1]];
     var projectedLocation = projection(location);
     if (projectedLocation !== null) {
       centroidPositions.push(projectedLocation);
     }
+    centroidsHash[stateCode] = stateCoordinates;
   });
 
   circles.selectAll("circle")
