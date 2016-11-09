@@ -29,7 +29,7 @@
 	{"type":"Feature","id":"33","geometry":{"type":"Point","coordinates":[-71.463342,43.153046]},"properties":{"name":"New Hampshire","population":1235786}},
 	{"type":"Feature","id":"34","geometry":{"type":"Point","coordinates":[-74.428055,40.438458]},"properties":{"name":"New Jersey","population":8414350}},
 	{"type":"Feature","id":"35","geometry":{"type":"Point","coordinates":[-106.342108,34.623012]},"properties":{"name":"New Mexico","population":1819046}},
-	{"type":"Feature","id":"36","geometry":{"type":"Point","coordinates":[-74.645228,41.507548]},"properties":{"name":"New York","population":18976457}},
+	{"type":"Feature","id":"36","geometry":{"type":"Point","coordinates":[-74.2179,43.2994]},"properties":{"name":"New York","population":18976457}},
 	{"type":"Feature","id":"37","geometry":{"type":"Point","coordinates":[-79.667654,35.553334]},"properties":{"name":"North Carolina","population":8049313}},
 	{"type":"Feature","id":"38","geometry":{"type":"Point","coordinates":[-99.334736,47.375168]},"properties":{"name":"North Dakota","population":642200}},
 	{"type":"Feature","id":"39","geometry":{"type":"Point","coordinates":[-82.749366,40.480854]},"properties":{"name":"Ohio","population":11353140}},
