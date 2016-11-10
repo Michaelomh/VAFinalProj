@@ -207,7 +207,7 @@ function getLinksLatLng(arr,fromState) {
   // d3.json("data/us-states-centroids.json", function(centroids) {
   //   console.log(centroids);
   // });
-
+  console.log(links);
   for (j=0; j<links.length; j++) {
     var sourceTargetObj = {};
     var sourceCoord = centroidsHash[links[j][0]];
@@ -310,6 +310,7 @@ d3.json("data/us-states.json", function(collection) {
 
     //needs input from crossfilter
     passengersArr = statesSumArrByTime(data, 'Passengers', dateArr[0], dateArr[1]);
+    console.log(passengersArr);
     passengersHash = arrToHash(passengersArr);
     // console.log(passengersHash);
   });
