@@ -11,6 +11,7 @@
         <!-- Place favicon.ico in the root directory -->
 
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/dc.min.css">
         <link rel="stylesheet" href="css/main.css">
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
         <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
@@ -27,6 +28,7 @@
 
         <!-- map of usa -->
         <div id="map"></div>
+        <div id="usChart"></div>
 
         <!-- bubble plot of fare and passengers for selected route(s) -->
 
@@ -38,8 +40,10 @@
             <p id="stateTo"></p>
         </div> -->
 
-        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="js/vendor/crossfilter.min.js"></script>
+        <script src="js/vendor/dc-1.7.5.min.js"></script>
         <script src="data/states-hash.json"></script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
