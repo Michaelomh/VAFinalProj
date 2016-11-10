@@ -441,7 +441,7 @@ var clickBgColor = '#777';
 // });
 
 var usChart = dc.geoChoroplethChart("#usChart");
-
+var colorScale = ["#eff3ff","#bdd7e7","#6baed6","#3182bd","#08519c"];
 var numberFormat = d3.format(".2f");
 
 d3.csv("data/fare-passengers-summarized.csv", function(csv) {
@@ -475,7 +475,7 @@ d3.csv("data/fare-passengers-summarized.csv", function(csv) {
          .colors(d3.scale
                    .quantize()
                    .domain([50000,300000000]) //segmenting can be improved
-                   .range(["#eff3ff","#bdd7e7","#6baed6","#3182bd","#08519c"]))
+                   .range(colorScale))
          .colorCalculator(function (d) { return d ? usChart.colors()(d) : '#ccc'; })
          .overlayGeoJson(statesJson.features, "state", function (d) {
             return d.properties.name;
