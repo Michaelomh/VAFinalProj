@@ -95,9 +95,15 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-#states path {
+svg {
+  margin: 0 auto;
+  display: inherit;
+}
+
+.states path {
  fill: #ccc;
  stroke: #fff;
+ cursor: pointer;
 }
 
 path.arc {

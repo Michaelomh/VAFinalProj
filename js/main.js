@@ -11,284 +11,283 @@ var hoverBgColor = '#a5a5a5';
 var defaultBgColor = '#cccccc';
 var clickBgColor = '#777';
 
-// var path = d3.geo.path()
-//     .projection(projection);
+var path = d3.geo.path()
+    .projection(projection);
 
-// var svg = d3.select("#map").insert("svg:svg", "h2")
-//     .attr("width", w)
-//     .attr("height", h);
+var svg = d3.select("#map").insert("svg:svg", "h2")
+    .attr("width", w)
+    .attr("height", h);
 
-// var centroidPositions = [];
+var centroidPositions = [];
 
-// var states = svg.append("svg:g")
-//     .attr("id", "states");
+var states = svg.append("svg:g")
+    .attr("id", "states");
 
-// var circles = svg.append("svg:g")
-//     .attr("id", "circles");
+var circles = svg.append("svg:g")
+    .attr("id", "circles");
 
-// var arcsLayer;
-// var arcData;
+var arcsLayer;
+var arcData;
 
-// var cells = svg.append("svg:g")
-//     .attr("id", "cells");
+var cells = svg.append("svg:g")
+    .attr("id", "cells");
 
-// var display = svg.append("text")
-//                 .attr("x", 130)
-//                 .attr("y", h-60)
-//                 .attr("class", "legend")
-//                 .style("fill", "black")
-//                 .text("Select a state");
-
-
-// var chosenStateFrom = "";
-// var chosenStateTo = "";
-// var passengersDisplay;
-// var fareDisplay;
-// var centroidsHash = {};
-
-// // sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
-// var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
+var display = svg.append("text")
+                .attr("x", 130)
+                .attr("y", h-60)
+                .attr("class", "legend")
+                .style("fill", "black")
+                .text("Select a state");
 
 
-// ///// Utility Functions
+var chosenStateFrom = "";
+var chosenStateTo = "";
+var passengersDisplay;
+var fareDisplay;
+var centroidsHash = {};
 
-// function searchHash(key1, key2, hash) {
-//   var keyToFind = key1 + key2;
-//   return hash[keyToFind];
+// sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
+var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
+
+
+///// Utility Functions
+
+function searchHash(key1, key2, hash) {
+  var keyToFind = key1 + key2;
+  return hash[keyToFind];
+}
+
+function getKeyByValue(obj,value) {
+  for( var prop in obj ) {
+        if( obj.hasOwnProperty( prop ) ) {
+             if( obj[ prop ] === value )
+                 return prop;
+        }
+    }
+}
+
+function updateText(svg,text) {
+  svg.text(text);
+}
+
+function currentColor(svg) {
+  return rgb2hex(d3.select(svg).style("fill"));
+}
+
+function clickedEle(svg) {
+  return d3.select(svg).attr("clicked") === "true" ;
+}
+
+function arrToHash(arr) {
+  var objHash = {};
+  for (i=0;i<arr.length;i++) {
+    var hashKey = arr[i][0] + arr[i][1];
+    objHash[hashKey] = arr[i][2];
+  }
+  return objHash;
+}
+
+function rgb2hex(rgb){
+ rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+ return (rgb && rgb.length === 4) ? "#" +
+  ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+  ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
+}
+
+
+// Date.daysBetween = function( date1, date2 ) {
+//   //Get 1 day in milliseconds
+//   var one_day=1000*60*60*24;
+
+//   // Convert both dates to milliseconds
+//   var date1_ms = date1.getTime();
+//   var date2_ms = date2.getTime();
+
+//   // Calculate the difference in milliseconds
+//   var difference_ms = date2_ms - date1_ms;
+
+//   // Convert back to days and return
+//   return Math.round(difference_ms/one_day);
 // }
 
-// function getKeyByValue(obj,value) {
-//   for( var prop in obj ) {
-//         if( obj.hasOwnProperty( prop ) ) {
-//              if( obj[ prop ] === value )
-//                  return prop;
-//         }
-//     }
-// }
+Date.quartersBetweenInDays = function( date1, date2 ) {
+  if (date2 > date1) {
+    var dateInYears = [ date1.getFullYear(), date2.getFullYear() ];
+    var dateInQuarters = [ Math.floor((date1.getMonth())/3)+1, Math.floor((date2.getMonth())/3)+1 ];
+    // console.log(dateInQuarters);
+    var yearsDiff = dateInYears[1] - dateInYears[0];
+    if (yearsDiff === 0) {
+      return ( Math.abs(dateInQuarters[0] - dateInQuarters[1]) + 1 ) * 91;
+    } else {
+      return (yearsDiff-1)*365 + (Math.abs(dateInQuarters[0]-5) + dateInQuarters[1])*91;
+    }
+  } else {
+    throw date1 + " has to be less than " + date2;
+  }
+}
 
-// function updateText(svg,text) {
-//   svg.text(text);
-// }
+// DO I NEED TO CHANGE THE WAY I SUM? CURRENTLY I JUST ADD ALL TOGETHER. SHOULD I DIVIDE & MULTIPLY BY TOTAL DAYS?
+function statesSumArrByTime(array, prop, dateStart, dateEnd) {
+  var sum = parseFloat(array[0][prop]);
+  var arr = [];
+  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
+  var daysBetween = Date.quartersBetweenInDays(dateStart, dateEnd);
 
-// function currentColor(svg) {
-//   return rgb2hex(d3.select(svg).style("fill"));
-// }
+  // array has to be sorted by states-from, states-to
+  for (i=1; i<array.length; i++) {
+    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
+    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
+      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
 
-// function clickedEle(svg) {
-//   return d3.select(svg).attr("clicked") === "true" ;
-// }
+      if (statesCurrent.toString() !== statesParsed.toString()) {
+        var currentStateArr = statesParsed.slice(0);
+        currentStateArr.push(sum);
+        arr.push(currentStateArr);
+        statesParsed = statesCurrent;
+        sum = parseFloat(array[i][prop]);
+      } else {
+        sum += parseFloat(array[i][prop]);
+      }
+    }
+  }
+  return arr;
+  // should return [[state-from, state-to, sum],[],...]
+}
 
-// function arrToHash(arr) {
-//   var objHash = {};
-//   for (i=0;i<arr.length;i++) {
-//     var hashKey = arr[i][0] + arr[i][1];
-//     objHash[hashKey] = arr[i][2];
-//   }
-//   return objHash;
-// }
+function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
+  var sumArr = [parseFloat(array[0][prop])];
+  var arr = [];
+  var statesParsed = [array[0]['State-from'], array[0]['State-to']];
 
-// function rgb2hex(rgb){
-//  rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-//  return (rgb && rgb.length === 4) ? "#" +
-//   ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-//   ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-//   ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : '';
-// }
+  // array has to be sorted by states-from, states-to
 
+  for (i=1; i<array.length; i++) {
+    var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
+    if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
+      var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
 
-// // Date.daysBetween = function( date1, date2 ) {
-// //   //Get 1 day in milliseconds
-// //   var one_day=1000*60*60*24;
-
-// //   // Convert both dates to milliseconds
-// //   var date1_ms = date1.getTime();
-// //   var date2_ms = date2.getTime();
-
-// //   // Calculate the difference in milliseconds
-// //   var difference_ms = date2_ms - date1_ms;
-
-// //   // Convert back to days and return
-// //   return Math.round(difference_ms/one_day);
-// // }
-
-// Date.quartersBetweenInDays = function( date1, date2 ) {
-//   if (date2 > date1) {
-//     var dateInYears = [ date1.getFullYear(), date2.getFullYear() ];
-//     var dateInQuarters = [ Math.floor((date1.getMonth())/3)+1, Math.floor((date2.getMonth())/3)+1 ];
-//     // console.log(dateInQuarters);
-//     var yearsDiff = dateInYears[1] - dateInYears[0];
-//     if (yearsDiff === 0) {
-//       return ( Math.abs(dateInQuarters[0] - dateInQuarters[1]) + 1 ) * 91;
-//     } else {
-//       return (yearsDiff-1)*365 + (Math.abs(dateInQuarters[0]-5) + dateInQuarters[1])*91;
-//     }
-//   } else {
-//     throw date1 + " has to be less than " + date2;
-//   }
-// }
-
-// // DO I NEED TO CHANGE THE WAY I SUM? CURRENTLY I JUST ADD ALL TOGETHER. SHOULD I DIVIDE & MULTIPLY BY TOTAL DAYS?
-// function statesSumArrByTime(array, prop, dateStart, dateEnd) {
-//   var sum = parseFloat(array[0][prop]);
-//   var arr = [];
-//   var statesParsed = [array[0]['State-from'], array[0]['State-to']];
-//   var daysBetween = Date.quartersBetweenInDays(dateStart, dateEnd);
-
-//   // array has to be sorted by states-from, states-to
-//   for (i=1; i<array.length; i++) {
-//     var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
-//     if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
-//       var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
-
-//       if (statesCurrent.toString() !== statesParsed.toString()) {
-//         var currentStateArr = statesParsed.slice(0);
-//         currentStateArr.push(sum);
-//         arr.push(currentStateArr);
-//         statesParsed = statesCurrent;
-//         sum = parseFloat(array[i][prop]);
-//       } else {
-//         sum += parseFloat(array[i][prop]);
-//       }
-//     }
-//   }
-//   return arr;
-//   // should return [[state-from, state-to, sum],[],...]
-// }
-
-// function statesAvgArrByTime(array, prop, dateStart, dateEnd) {
-//   var sumArr = [parseFloat(array[0][prop])];
-//   var arr = [];
-//   var statesParsed = [array[0]['State-from'], array[0]['State-to']];
-
-//   // array has to be sorted by states-from, states-to
-
-//   for (i=1; i<array.length; i++) {
-//     var currentDate = new Date(array[i]['Year'], array[i]['Month'], array[i]['Day']);
-//     if ((dateStart <= currentDate) && (dateEnd >= currentDate )) {
-//       var statesCurrent = [array[i]['State-from'], array[i]['State-to']];
-
-//       if (statesCurrent.toString() !== statesParsed.toString()) {
-//         var currentStateArr = statesParsed.slice(0);
-//         var sumArrLength = sumArr.length;
-//         var avg = sumArr.reduce(function(a,b) {
-//                         return a + b;
-//                       }, 0) / sumArrLength;
-//         currentStateArr.push(avg);
-//         arr.push(currentStateArr);
-//         statesParsed = statesCurrent;
-//         sumArr = [parseFloat(array[i][prop])];
-//       } else {
-//         sumArr.push(parseFloat(array[i][prop]));
-//       }
-//     }
-//   }
-//   return arr;
-//   // should return [[state-from, state-to, avg],[],...]
-// }
+      if (statesCurrent.toString() !== statesParsed.toString()) {
+        var currentStateArr = statesParsed.slice(0);
+        var sumArrLength = sumArr.length;
+        var avg = sumArr.reduce(function(a,b) {
+                        return a + b;
+                      }, 0) / sumArrLength;
+        currentStateArr.push(avg);
+        arr.push(currentStateArr);
+        statesParsed = statesCurrent;
+        sumArr = [parseFloat(array[i][prop])];
+      } else {
+        sumArr.push(parseFloat(array[i][prop]));
+      }
+    }
+  }
+  return arr;
+  // should return [[state-from, state-to, avg],[],...]
+}
 
 
-// function getLinksLatLng(arr,fromState) {
-//   // input fromState code, eg. "CA"
-//   var links = [];
-//   var linksLatLng = [];
-//   for (i=0; i<arr.length; i++) {
-//     if (arr[i][0] === fromState) {
-//       links.push([arr[i][0], arr[i][1]]);
-//     }
-//   }
-//   // d3.json("data/us-states-centroids.json", function(centroids) {
-//   //   console.log(centroids);
-//   // });
-//   for (j=0; j<links.length; j++) {
-//     var sourceTargetObj = {};
-//     var sourceCoord = centroidsHash[links[j][0]];
-//     var targetCoord = centroidsHash[links[j][1]];
-//     sourceTargetObj.source_lat = sourceCoord[1];
-//     sourceTargetObj.source_lng = sourceCoord[0];
-//     sourceTargetObj.target_lat = targetCoord[1];
-//     sourceTargetObj.target_lng = targetCoord[0];
-//     sourceTargetObj.sourceLocation = [sourceTargetObj.source_lng,sourceTargetObj.source_lat]
-//     sourceTargetObj.targetLocation = [sourceTargetObj.target_lng,sourceTargetObj.target_lat];
-//     linksLatLng.push(sourceTargetObj);
-//   }
-//   return linksLatLng;
-// }
+function getLinksLatLng(arr,fromState) {
+  // input fromState code, eg. "CA"
+  var links = [];
+  var linksLatLng = [];
+  for (i=0; i<arr.length; i++) {
+    if (arr[i][0] === fromState) {
+      links.push([arr[i][0], arr[i][1]]);
+    }
+  }
+  // d3.json("data/us-states-centroids.json", function(centroids) {
+  //   console.log(centroids);
+  // });
+  for (j=0; j<links.length; j++) {
+    var sourceTargetObj = {};
+    var sourceCoord = centroidsHash[links[j][0]];
+    var targetCoord = centroidsHash[links[j][1]];
+    sourceTargetObj.source_lat = sourceCoord[1];
+    sourceTargetObj.source_lng = sourceCoord[0];
+    sourceTargetObj.target_lat = targetCoord[1];
+    sourceTargetObj.target_lng = targetCoord[0];
+    sourceTargetObj.sourceLocation = [sourceTargetObj.source_lng,sourceTargetObj.source_lat]
+    sourceTargetObj.targetLocation = [sourceTargetObj.target_lng,sourceTargetObj.target_lat];
+    linksLatLng.push(sourceTargetObj);
+  }
+  return linksLatLng;
+}
 
-// var arcs = {
-//   bake: function(layer){
-//     // Remove all exisiting arcs
-//     if (arcsLayer) layer.selectAll('.arcs').remove();
+var arcs = {
+  bake: function(layer){
+    // Remove all exisiting arcs
+    if (arcsLayer) layer.selectAll('.arcs').remove();
 
-//     // Group for the arcs
-//     arcsLayer = layer.append('g')
-//         .attr('class','arcs');
+    // Group for the arcs
+    arcsLayer = layer.append('g')
+        .attr('class','arcs');
 
-//     // We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
-//     var arc_group = arcsLayer.selectAll('.great-arc-group')
-//         .data(arcData).enter()
-//           .append('g')
-//           .classed('great-arc-group', true);
+    // We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
+    var arc_group = arcsLayer.selectAll('.great-arc-group')
+        .data(arcData).enter()
+          .append('g')
+          .classed('great-arc-group', true);
 
-//     // In each group, create a path for each source/target pair.
-//     arc_group.append('path')
-//       .attr('d', function(d) {
-//         return arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 2); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
-//       });
+    // In each group, create a path for each source/target pair.
+    arc_group.append('path')
+      .attr('d', function(d) {
+        return arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 2); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+      });
 
-//     // And a circle for each end point
-//     arc_group.append('circle')
-//         .attr('r', 2)
-//         .classed('great-arc-end', true)
-//         .attr("transform", function(d) {
-//           return "translate(" + arcs.lngLatToPoint(d.targetLocation) + ")";
-//         });
+    // And a circle for each end point
+    arc_group.append('circle')
+        .attr('r', 2)
+        .classed('great-arc-end', true)
+        .attr("transform", function(d) {
+          return "translate(" + arcs.lngLatToPoint(d.targetLocation) + ")";
+        });
 
-//   },
-//   lngLatToArc: function(d, sourceName, targetName, bend){
-//     // If no bend is supplied, then do the plain square root
-//     bend = bend || 1;
+  },
+  lngLatToArc: function(d, sourceName, targetName, bend){
+    // If no bend is supplied, then do the plain square root
+    bend = bend || 1;
 
-//     // `d[sourceName]` and `d[targetname]` are arrays of `[lng, lat]`
-//     // Note, people often put these in lat then lng, but mathematically we want x then y which is `lng,lat`
-//     var sourceLngLat = d[sourceName],
-//         targetLngLat = d[targetName];
+    // `d[sourceName]` and `d[targetname]` are arrays of `[lng, lat]`
+    // Note, people often put these in lat then lng, but mathematically we want x then y which is `lng,lat`
+    var sourceLngLat = d[sourceName],
+        targetLngLat = d[targetName];
 
-//     if (targetLngLat && sourceLngLat) {
-//       var sourceXY = projection( sourceLngLat ),
-//           targetXY = projection( targetLngLat );
+    if (targetLngLat && sourceLngLat) {
+      var sourceXY = projection( sourceLngLat ),
+          targetXY = projection( targetLngLat );
 
-//       // Comment this out for production, useful to see if you have any null lng/lat values
-//       // if (!targetXY) console.log(d, targetLngLat, targetXY)
-//       var sourceX = sourceXY[0],
-//           sourceY = sourceXY[1];
+      // Comment this out for production, useful to see if you have any null lng/lat values
+      // if (!targetXY) console.log(d, targetLngLat, targetXY)
+      var sourceX = sourceXY[0],
+          sourceY = sourceXY[1];
 
-//       var targetX = targetXY[0],
-//           targetY = targetXY[1];
+      var targetX = targetXY[0],
+          targetY = targetXY[1];
 
-//       var dx = targetX - sourceX,
-//           dy = targetY - sourceY,
-//           dr = Math.sqrt(dx * dx + dy * dy)*bend;
+      var dx = targetX - sourceX,
+          dy = targetY - sourceY,
+          dr = Math.sqrt(dx * dx + dy * dy)*bend;
 
-//       // To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
-//       var west_of_source = (targetX - sourceX) < 0;
-//       if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
-//       return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
+      // To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
+      var west_of_source = (targetX - sourceX) < 0;
+      if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
+      return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
 
-//     } else {
-//       return "M0,0,l0,0z";
-//     }
-//   },
-//   lngLatToPoint: function(location_array){
-//     // Our projection function handles the conversion between lng/lat pairs and svg space
-//     // But we put this wrapper around it to handle the even of any empty rows
-//     if (location_array) {
-//       return projection(location_array);
-//     } else {
-//       return '0,0';
-//     }
-//   }
-// };
-
+    } else {
+      return "M0,0,l0,0z";
+    }
+  },
+  lngLatToPoint: function(location_array){
+    // Our projection function handles the conversion between lng/lat pairs and svg space
+    // But we put this wrapper around it to handle the even of any empty rows
+    if (location_array) {
+      return projection(location_array);
+    } else {
+      return '0,0';
+    }
+  }
+};
 
 // d3.json("data/us-states.json", function(collection) {
 //   var passengersHash;
@@ -388,11 +387,11 @@ var clickBgColor = '#777';
 //       countByAirport = {},
 //       locationByAirport = {},
 //       positions = [];
-//
+
 //   var arc = d3.geo.greatArc()
 //       .source(function(d) { return locationByAirport[d.source]; })
 //       .target(function(d) { return locationByAirport[d.target]; });
-//
+
 //   flights.forEach(function(flight) {
 //     var origin = flight.origin,
 //         destination = flight.destination,
@@ -401,9 +400,9 @@ var clickBgColor = '#777';
 //     countByAirport[origin] = (countByAirport[origin] || 0) + 1;
 //     countByAirport[destination] = (countByAirport[destination] || 0) + 1;
 //   });
-//
+
 //   d3.csv("airports.csv", function(airports) {
-//
+
 //     // Only consider airports with at least one flight.
 //     airports = airports.filter(function(airport) {
 //       if (countByAirport[airport.iata]) {
@@ -413,23 +412,23 @@ var clickBgColor = '#777';
 //         return true;
 //       }
 //     });
-//
-//
+
+
 //     var g = cells.selectAll("g")
 //         .data(airports)
 //       .enter().append("svg:g");
-//
+
 //     g.append("svg:path")
 //         .attr("class", "cell")
 //         .attr("d", function(d, i) { return "M" + polygons[i].join("L") + "Z"; })
 //         .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); });
-//
+
 //     g.selectAll("path.arc")
 //         .data(function(d) { return linksByOrigin[d.iata] || []; })
 //       .enter().append("svg:path")
 //         .attr("class", "arc")
 //         .attr("d", function(d) { return path(arc(d)); });
-//
+
 //     circles.selectAll("circle")
 //         .data(airports)
 //       .enter().append("svg:circle")
@@ -439,51 +438,212 @@ var clickBgColor = '#777';
 //         .sort(function(a, b) { return countByAirport[b.iata] - countByAirport[a.iata]; });
 //   });
 // });
+var gfx = {
+	viz: {
+		draw: function(layer){
+			gfx.baseMap.bake(layer);
+			gfx.arcs.bake(layer);
+		}
+	},
+	baseMap: {
+		setValues: function(){
+			// These values are shared among all instances of our basemap
+			// Map dimensions (in pixels)
+			this.width = 900;
+			this.height = 600;
 
-var usChart = dc.geoChoroplethChart("#usChart");
-var colorScale = ["#eff3ff","#bdd7e7","#6baed6","#3182bd","#08519c"];
-var numberFormat = d3.format(".2f");
+			// Map projection
+			this.projection = d3.geo.albersUsa()
+					.scale(900)
+					.translate([this.width/2, this.height/2]); //translate to center the map in view
 
-d3.csv("data/fare-passengers-summarized.csv", function(csv) {
-  var data = crossfilter(csv);
+			// Generate paths based on projection
+			this.path = d3.geo.path()
+					.projection(this.projection);
 
-  var stateFrom = data.dimension(function(d) {
-    return d["State-from-full"];
-  });
+		},
+		bake: function(layer){
+			this[layer] = {};
+			// Create an SVG
+			this[layer].svg = d3.select('.map-container[data-contains="'+layer+'"]').append('svg')
+					.attr('width', this.width)
+					.attr('height', this.height);
 
-  var stateFromPassengersSum = stateFrom.group().reduceSum(function(d) {
-    return d["Passengers"];
-  });
+			// Keeps track of currently zoomed feature
+			this[layer].centered;
 
-  var stateLinks = data.dimension(function(d) {
-    return 'stateFrom=' + d["State-from"] + '; stateTo=' + d["State-to"];
-  });
+			this[layer].states = this[layer].svg.append('g')
+					.attr('class','states');
+			//Create a path for each map feature in the data
+			this[layer].states.selectAll('path')
+				.data(data.baseMapGeometry.features) //
+				.enter()
+				.append('path')
+				.attr('d', this.path);
+				// .on('click', function(d,i) { gfx.baseMap.zoom(d,i,layer) });
+		},
+		zoom: function(d,i,layer){
+			//Add any other onClick events here
+			var x, y, k;
 
-  var stateLinksPassengers = stateLinks.group().reduceSum(function(d) {
-    return d["Passengers"].all();
-  });
-  var passengers = data.dimension(function(d) {
-    return d["Passengers"];
-  });
+			if (d && gfx.baseMap[layer].centered !== d) {
+		    // Compute the new map center and scale to zoom to
+				var centroid = gfx.baseMap.path.centroid(d);
+				var b = gfx.baseMap.path.bounds(d);
+				x = centroid[0];
+				y = centroid[1];
+				k = .8 / Math.max((b[1][0] - b[0][0]) / gfx.baseMap.width, (b[1][1] - b[0][1]) / gfx.baseMap.height);
+				gfx.baseMap[layer].centered = d
+			} else {
+				x = gfx.baseMap.width / 2;
+				y = gfx.baseMap.height / 2;
+				k = 1;
+				gfx.baseMap[layer].centered = null;
+			}
 
-  d3.json("data/us-states.json", function(statesJson) {
+			// Highlight the new feature
+			gfx.baseMap[layer].states.selectAll("path")
+				.classed("highlighted",function(d) {
+						return d === gfx.baseMap[layer].centered;
+				})
+				.style("stroke-width", 1 / k + "px"); // Keep the border width constant
 
-  usChart.width(990)
-         .height(500)
-         .dimension(stateFrom)
-         .group(stateFromPassengersSum)
-         .colors(d3.scale
-                   .quantize()
-                   .domain([50000,300000000]) //segmenting can be improved
-                   .range(colorScale))
-         .colorCalculator(function (d) { return d ? usChart.colors()(d) : '#ccc'; })
-         .overlayGeoJson(statesJson.features, "state", function (d) {
-            return d.properties.name;
-         })
-         .title(function(d) {
-           return "State: " + d.key + "\nTotal Passengers Departure: " + numberFormat(d.value ? d.value/1000000 : 0) + "M";
-         });
+			//Zoom and re-center the whole map container
+			//Comment `.transition()` and `.duration()` to eliminate gradual zoom
+			gfx.baseMap[layer].svg
+				.transition()
+				.duration(500)
+				.attr("transform","translate(" + gfx.baseMap.width / 2 + "," + gfx.baseMap.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
+		}
+	},
+	arcs: {
+		bake: function(layer){
+			// Group for the arcs
+			gfx.baseMap[layer].arcs = gfx.baseMap[layer].svg.append('g')
+					.attr('class','arcs');
 
-  dc.renderAll();
-  });
-});
+			// We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
+			var arc_group = gfx.baseMap[layer].arcs.selectAll('.great-arc-group')
+					.data(data.arcs).enter()
+						.append('g')
+						.classed('great-arc-group', true);
+
+			// In each group, create a path for each source/target pair.
+			arc_group.append('path')
+				.attr('d', function(d) {
+					// console.log(d)
+					return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 15); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+				});
+
+			// And a circle for each end point
+			arc_group.append('circle')
+					.attr('r', 2)
+					.classed('great-arc-end', true)
+				  .attr("transform", function(d) {
+				    return "translate(" + gfx.arcs.lngLatToPoint(d.targetLocation) + ")";
+				  });
+
+		},
+		lngLatToArc: function(d, sourceName, targetName, bend){
+			// If no bend is supplied, then do the plain square root
+			bend = bend || 1;
+
+			// `d[sourceName]` and `d[targetname]` are arrays of `[lng, lat]`
+			// Note, people often put these in lat then lng, but mathematically we want x then y which is `lng,lat`
+			var sourceLngLat = d[sourceName],
+					targetLngLat = d[targetName];
+
+			if (targetLngLat && sourceLngLat) {
+				var sourceXY = gfx.baseMap.projection( sourceLngLat ),
+						targetXY = gfx.baseMap.projection( targetLngLat );
+
+				// Comment this out for production, useful to see if you have any null lng/lat values
+				if (!targetXY) console.log(d, targetLngLat, targetXY)
+				var sourceX = sourceXY[0],
+						sourceY = sourceXY[1];
+
+				var targetX = targetXY[0],
+						targetY = targetXY[1];
+
+				var dx = targetX - sourceX,
+						dy = targetY - sourceY,
+						dr = Math.sqrt(dx * dx + dy * dy)*bend;
+
+				// To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
+				var west_of_source = (targetX - sourceX) < 0;
+				if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
+				return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
+
+			} else {
+				return "M0,0,l0,0z";
+			}
+		},
+		lngLatToPoint: function(location_array){
+			// Our projection function handles the conversion between lng/lat pairs and svg space
+			// But we put this wrapper around it to handle the even of any empty rows
+			if (location_array) {
+				return gfx.baseMap.projection(location_array);
+			} else {
+				return '0,0';
+			}
+		},
+		transform: {
+			locationifyArcCsv: function(arcs){
+				// Our csv has location stored as separate columns
+				// We need to turn those columns into arrays
+				// And, importantly, we need to convert the values from strings, which the csv probably sees them as into numbers
+				// We can do this conversion (referred to as "casting") by putting a `+` before the value.
+				arcs.forEach(function(arc){
+					arc.sourceLocation = [+arc.source_lng, +arc.source_lat];
+					arc.targetLocation = [+arc.target_lng, +arc.target_lat];
+				});
+				return arcs;
+			}
+		}
+	}
+}
+
+var onDone = {
+	initViz: function(){
+		gfx.baseMap.setValues();
+		gfx.viz.draw('main');
+	}
+}
+
+var data = {
+	load: {
+		baseMap: function(callback){
+			d3.json('data/us-states.json', function(error, baseMapGeometry){
+				if (error) return console.log(error); // Unknown error, check the console
+				// Store the geodata on the data object for reference later
+				data.baseMapGeometry = baseMapGeometry;
+				callback();
+			});
+		},
+		flights: function(callback){
+			d3.csv('data/2016-flights.csv', function(error, flights){
+				if (error) return console.log(error); // Unknown error, check the console
+				// Store flights on the data object for reference later
+				data.flights = flights;
+				callback();
+			})
+		}
+	}
+}
+
+var init = {
+	go: function(){
+		// Instead of loading the data through this callback situation
+		// You could use queue.js and wait for all of them to be done.
+		// But there's enough going on here for one tutorial.
+		data.load.baseMap(function(){
+			data.load.flights(onDone.initViz);
+		})
+	}
+}
+
+init.go();
+
+// Things to do:
+// figure out arcs thingy
+// add circles that correspond to incoming and outgoing flights
