@@ -1,4 +1,4 @@
-AIRPORT_ID,DISPLAY_AIRPORT_NAME,LATITUDE,LONGITUDE,DISPLAY_AIRPORT_CITY_NAME_FULL
+airportID,displayAirportName,lat,lon,displayAirportCityName
 10001,Afognak Lake Airport,58.10944444,-152.9066667,"Afognak Lake, AK"
 10003,Bear Creek Mining Strip,65.54805556,-161.0716667,"Granite Mountain, AK"
 10004,Lik Mining Camp,68.08333333,-163.1666667,"Lik, AK"

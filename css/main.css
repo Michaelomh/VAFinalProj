@@ -135,7 +135,15 @@ path.cell {
   fill: tomato;
 }
 
+.airports path {
+  stroke-width: 1px;
+  opacity
+}
 
+.airports {
+  fill: darkblue;
+  opacity: 0.8;
+}
 
 
 
