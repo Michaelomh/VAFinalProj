@@ -137,12 +137,12 @@ path.cell {
 
 .airports path {
   stroke-width: 1px;
-  opacity
+  stroke: white;
+  opacity: .5;
 }
 
 .airports {
-  fill: darkblue;
-  opacity: 0.8;
+  fill: #1821B5;
 }
 
 
