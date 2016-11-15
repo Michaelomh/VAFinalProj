@@ -442,7 +442,8 @@ var flightsByDate,
 		flightsByOriginAiports,
 		passengersByOriginAirports,
 		flightsByDestAirports,
-		passengersByDestAirports;
+		passengersByDestAirports,
+    OriDestAirportsGroup;
 
 var radius = d3.scale.sqrt()
     .domain([0, 1e6])
@@ -646,10 +647,13 @@ var gfx = {
 				.data(airportData.features)
 			.enter()
 				.append("path")
-				.attr("class", "airport")
-				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
-					return radius(d.properties.outgoingPassengers);
-				}));
+				.attr("class", "airport");
+				// .attr("d", gfx.baseMap.path.pointRadius(function(d) {
+    //       if (d.properties.outgoingPassengers !== undefined) {
+    //         return radius(d.properties.outgoingPassengers);
+    //       }
+    //       // console.log(d);
+				// }));
 		}
 	}
 }
@@ -685,6 +689,18 @@ var data = {
 				passengersByDestAirports = flightsByDestAirports.group().reduceSum(function(d) {
 					return d['PASSENGERS'];
 				});
+        var OriDestAirportsDimension = data.flights.dimension(function(d) {
+          //stringify() and later, parse() to get keyed objects
+          return JSON.stringify ( { originID: d["ORIGIN_AIRPORT_ID"], destID: d["DEST_AIRPORT_ID"] } ) ;
+        });
+        // console.log(OriDestAirportsDimension);
+        OriDestAirportsGroup = OriDestAirportsDimension.group().reduceSum(function(d) {
+          return d['PASSENGERS'];
+        });
+        OriDestAirportsGroup.all().forEach(function(d) {
+          d.key = JSON.parse(d.key);
+        });
+        console.log(OriDestAirportsGroup.all());
 				callback();
 			});
 		},
