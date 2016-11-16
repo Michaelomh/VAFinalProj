@@ -479,8 +479,8 @@ var gfx = {
 	viz: {
 		draw: function(layer){
 			gfx.baseMap.bake(layer);
-			gfx.airports.bake(layer);
       gfx.arcs.bake(layer);
+			gfx.airports.bake(layer);
 		}
 	},
 	baseMap: {
