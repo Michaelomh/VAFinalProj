@@ -126,7 +126,7 @@ path.cell {
 
 .arcs path {
   stroke-width: 1px;
-  opacity: .5;
+  opacity: .05;
   stroke: tomato;
   pointer-events: none;
   fill: none;
