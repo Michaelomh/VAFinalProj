@@ -480,7 +480,7 @@ var gfx = {
 		draw: function(layer){
 			gfx.baseMap.bake(layer);
 			gfx.airports.bake(layer);
-			gfx.arcs.bake(layer);
+      gfx.arcs.bake(layer);
 		}
 	},
 	baseMap: {
@@ -599,7 +599,7 @@ var gfx = {
 				// Comment this out for production, useful to see if you have any null lng/lat values
 				if (!targetXY) console.log("target not in projection", d, targetLngLat, targetXY)
 
-        if (targetXY) {
+        if (targetXY && sourceXY) {
           var sourceX = sourceXY[0],
             sourceY = sourceXY[1];
 
