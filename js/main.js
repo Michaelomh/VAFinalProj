@@ -472,7 +472,7 @@ var gfx = {
 
 			// Map projection
 			this.projection = d3.geo.albersUsa()
-					.scale(900)
+					.scale(this.width)
 					.translate([this.width/2, this.height/2]); //translate to center the map in view
 
 			// Generate paths based on projection
@@ -647,13 +647,10 @@ var gfx = {
 				.data(airportData.features)
 			.enter()
 				.append("path")
-				.attr("class", "airport");
-				// .attr("d", gfx.baseMap.path.pointRadius(function(d) {
-    //       if (d.properties.outgoingPassengers !== undefined) {
-    //         return radius(d.properties.outgoingPassengers);
-    //       }
-    //       // console.log(d);
-				// }));
+				.attr("class", "airport")
+				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
+          return (typeof d.properties.outgoingPassengers != 'undefined') ? radius(d.properties.outgoingPassengers) : 0;
+				}));
 		}
 	}
 }
