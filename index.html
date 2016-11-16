@@ -1,44 +1,55 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Place favicon.ico in the root directory -->
 
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/dc.min.css">
-        <link rel="stylesheet" href="css/main.css">
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-        <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/dc.css" />
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
 
-        <h1>This is a start to our A+ Group Project.</h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script type="text/javascript" src="js/crossfilter.js"></script>
+    <script src="js/dc.js"></script>
+    <script type="text/javascript" src="js/lysenko-interval-tree.js"></script>
 
+</head>
+
+<body>
+    <div class="col-xs-12">
         <!-- cross filter -->
+        <div id="month">
+            <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
+                <a href="javascript:monthChart.filterAll().redrawGroup();">reset</a>
+            </div>
+            <span id="quarterValues"></span>
+        </div>
+    </div>
 
+    <div class="col-xs-12">
         <!-- map of usa -->
         <div class="map-container" data-contains="main"></div>
         <div id="usChart"></div>
+    </div>
+    <!-- bubble plot of fare and passengers for selected route(s) -->
 
-        <!-- bubble plot of fare and passengers for selected route(s) -->
+    <!-- time-series line graph of fare/passengers -->
 
-        <!-- time-series line graph of fare/passengers -->
-
-        <!-- <div class="legend">
+    <!-- <div class="legend">
             <p>Select a state</p>
             <p id="stateFrom"></p>
-            <p id="stateTo"></p>
-        </div> -->
+            <p id="stateTo"></p>-->
+</body>
+
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
@@ -57,5 +68,5 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
-    </body>
 </html>
+
