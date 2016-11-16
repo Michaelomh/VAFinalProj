@@ -627,22 +627,40 @@ var gfx = {
 
 			// combine the airport data with incoming/outgoing flight data
 			var airportData = data.airports;
+
 			var passengersByOriginAirportsData = passengersByOriginAirports.all();
 			var outgoingPassengersHash = {};
+
+      var passengersByDestAirportsData = passengersByDestAirports.all();
+      var incomingPassengersHash = {};
+
 			for (i = 0; i < passengersByOriginAirportsData.length; i++) {
 				var airportID = passengersByOriginAirportsData[i].key;
 				var passengers = passengersByOriginAirportsData[i].value;
 				outgoingPassengersHash[airportID] = passengers;
 			}
-			// add outgoingPassengers to airportData
+
+      for (i = 0; i < passengersByDestAirportsData.length; i++) {
+        var airportID = passengersByDestAirportsData[i].key;
+        var passengers = passengersByDestAirportsData[i].value;
+        incomingPassengersHash[airportID] = passengers;
+      }
+
+			// add outgoingPassengers and incomingPassengers to airportData
 			airportData.features.forEach(function(airport) {
 				// console.log(airport);
 				var outPassengers = outgoingPassengersHash[airport.properties.airportID];
+        var inPassengers = incomingPassengersHash[airport.properties.airportID];
 				if (outPassengers) {
 					airport.properties.outgoingPassengers = outPassengers;
 				}
+        if (inPassengers) {
+          airport.properties.incomingPassengers = inPassengers;
+        }
 				return airport;
 			});
+
+      //add symbols for outgoing passsengers
 			gfx.baseMap[layer].airports.selectAll(".airports")
 				.data(airportData.features)
 			.enter()
