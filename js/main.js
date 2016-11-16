@@ -445,22 +445,42 @@ var flightsByDate,
 		passengersByDestAirports,
     OriDestAirportsGroup;
 
+var arcsData = [];
+
+var airportLocationHash = {};
+
 var radius = d3.scale.sqrt()
     .domain([0, 1e6])
     .range([0, 8]);
 
 // var path = d3.geo.path().projection(d3.geo.albersUsa());
 
-function JSONtoGeoJSON(json, latName, lngName, property) {
+// function JSONtoGeoJSON(json, latName, lngName, property) {
 
-};
+// };
+
+// input array of originID, destID, value and hash of airports
+function airportsToLngLat(arr, hash) {
+  for (i=0; i<arr.length; i++) {
+    var originID = arr[i].key.originID;
+    var destID = arr[i].key.destID;
+    var value = arr[i].value;
+
+    var objToPush = {};
+    objToPush.sourceLocation = hash[originID];
+    objToPush.targetLocation = hash[destID];
+    objToPush.passengers = value;
+    arcsData.push(objToPush);
+  }
+  console.log(arcsData);
+}
 
 var gfx = {
 	viz: {
 		draw: function(layer){
 			gfx.baseMap.bake(layer);
 			gfx.airports.bake(layer);
-			// gfx.arcs.bake(layer);
+			gfx.arcs.bake(layer);
 		}
 	},
 	baseMap: {
@@ -540,9 +560,10 @@ var gfx = {
 			gfx.baseMap[layer].arcs = gfx.baseMap[layer].svg.append('g')
 					.attr('class','arcs');
 
+      airportsToLngLat(OriDestAirportsGroup.all(), airportLocationHash);
 			// We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
 			var arc_group = gfx.baseMap[layer].arcs.selectAll('.great-arc-group')
-					.data(data.arcs).enter()
+					.data(arcsData).enter()
 						.append('g')
 						.classed('great-arc-group', true);
 
@@ -550,7 +571,7 @@ var gfx = {
 			arc_group.append('path')
 				.attr('d', function(d) {
 					// console.log(d)
-					return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 15); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+					return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
 				});
 
 			// And a circle for each end point
@@ -576,21 +597,24 @@ var gfx = {
 						targetXY = gfx.baseMap.projection( targetLngLat );
 
 				// Comment this out for production, useful to see if you have any null lng/lat values
-				if (!targetXY) console.log(d, targetLngLat, targetXY)
-				var sourceX = sourceXY[0],
-						sourceY = sourceXY[1];
+				if (!targetXY) console.log("target not in projection", d, targetLngLat, targetXY)
 
-				var targetX = targetXY[0],
-						targetY = targetXY[1];
+        if (targetXY) {
+          var sourceX = sourceXY[0],
+            sourceY = sourceXY[1];
 
-				var dx = targetX - sourceX,
-						dy = targetY - sourceY,
-						dr = Math.sqrt(dx * dx + dy * dy)*bend;
+        var targetX = targetXY[0],
+            targetY = targetXY[1];
 
-				// To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
-				var west_of_source = (targetX - sourceX) < 0;
-				if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
-				return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
+        var dx = targetX - sourceX,
+            dy = targetY - sourceY,
+            dr = Math.sqrt(dx * dx + dy * dy)*bend;
+
+        // To avoid a whirlpool effect, make the bend direction consistent regardless of whether the source is east or west of the target
+        var west_of_source = (targetX - sourceX) < 0;
+        if (west_of_source) return "M" + targetX + "," + targetY + "A" + dr + "," + dr + " 0 0,1 " + sourceX + "," + sourceY;
+        return "M" + sourceX + "," + sourceY + "A" + dr + "," + dr + " 0 0,1 " + targetX + "," + targetY;
+        }
 
 			} else {
 				return "M0,0,l0,0z";
@@ -649,8 +673,9 @@ var gfx = {
 			// add outgoingPassengers and incomingPassengers to airportData
 			airportData.features.forEach(function(airport) {
 				// console.log(airport);
-				var outPassengers = outgoingPassengersHash[airport.properties.airportID];
-        var inPassengers = incomingPassengersHash[airport.properties.airportID];
+        var airportID = airport.properties.airportID;
+				var outPassengers = outgoingPassengersHash[airportID];
+        var inPassengers = incomingPassengersHash[airportID];
 				if (outPassengers) {
 					airport.properties.outgoingPassengers = outPassengers;
 				}
@@ -659,7 +684,6 @@ var gfx = {
         }
 				return airport;
 			});
-
       //add symbols for outgoing passsengers
 			gfx.baseMap[layer].airports.selectAll(".airports")
 				.data(airportData.features)
@@ -715,13 +739,21 @@ var data = {
         OriDestAirportsGroup.all().forEach(function(d) {
           d.key = JSON.parse(d.key);
         });
-        console.log(OriDestAirportsGroup.all());
+
 				callback();
 			});
 		},
 		airports: function(callback) {
 			d3.json('data/us-airports.json', function(error, airports) {
 				if (error) return console.log(error);
+
+        //create airportLocationHash
+        airports.features.forEach(function(airport) {
+          var airportID = airport.properties.airportID;
+          airportLocationHash[airportID] = airport.geometry.coordinates;
+          // coordinates are in Lng,Lat
+        });
+
 				// store airports on data object for reference later
 				data.airports = airports;
 				callback();
