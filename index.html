@@ -1,5 +1,6 @@
 <!doctype html>
 <html class="no-js" lang="">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -21,17 +22,20 @@
     <script type="text/javascript" src="js/crossfilter.js"></script>
     <script src="js/dc.js"></script>
     <script type="text/javascript" src="js/lysenko-interval-tree.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
 </head>
 
 <body>
     <div class="col-xs-12">
         <!-- cross filter -->
-        <div id="month">
-            <div class="reset" style="visibility: hidden;">selected: <span class="filter"></span>
-                <a href="javascript:monthChart.filterAll().redrawGroup();">reset</a>
-            </div>
-            <span id="quarterValues"></span>
+        <div id="monthView">
+
+        </div>
+        <div style="width: 980px;margin: 0px auto;">
+            <span id="selectedMonth">Selected Month: Nil</span>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <a id="resetMonth" style="cursor:pointer;">reset</a>
         </div>
     </div>
 
@@ -51,22 +55,33 @@
 </body>
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
-        <script src="js/vendor/crossfilter.min.js"></script>
-        <!-- <script src="js/vendor/dc-1.7.5.min.js"></script> -->
-        <script src="data/states-hash.json"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')
+</script>
+<script src="js/vendor/crossfilter.min.js"></script>
+<!-- <script src="js/vendor/dc-1.7.5.min.js"></script> -->
+<script src="data/states-hash.json"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script src="js/main2.js"></script>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='https://www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
-        </script>
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script>
+    (function (b, o, i, l, e, r) {
+        b.GoogleAnalyticsObject = l;
+        b[l] || (b[l] =
+            function () {
+                (b[l].q = b[l].q || []).push(arguments)
+            });
+        b[l].l = +new Date;
+        e = o.createElement(i);
+        r = o.getElementsByTagName(i)[0];
+        e.src = 'https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e, r)
+    }(window, document, 'script', 'ga'));
+    ga('create', 'UA-XXXXX-X', 'auto');
+    ga('send', 'pageview');
+</script>
+
 </html>
-
