@@ -85,6 +85,17 @@ function airportsToLngLat(arr, hash) {
   console.log(arcsData);
 }
 
+// function zoomed() {
+//   gfx.baseMap.projection.translate(d3.event.translate).scale(d3.event.scale);
+//   g.selectAll("path").attr("d", path);
+// }
+
+// var zoom = d3.behavior.zoom()
+//     .translate(gfx.baseMap.projection.translate())
+//     .scale(gfx.baseMap.projection.scale())
+//     .scaleExtent([height, 8 * height])
+//     .on("zoom", zoomed);
+
 var gfx = {
 	viz: {
 		draw: function(layer){
@@ -129,39 +140,6 @@ var gfx = {
 				.append('path')
 				.attr('d', this.path);
 				// .on('click', function(d,i) { gfx.baseMap.zoom(d,i,layer) });
-		},
-		zoom: function(d,i,layer){
-			//Add any other onClick events here
-			var x, y, k;
-
-			if (d && gfx.baseMap[layer].centered !== d) {
-		    // Compute the new map center and scale to zoom to
-				var centroid = gfx.baseMap.path.centroid(d);
-				var b = gfx.baseMap.path.bounds(d);
-				x = centroid[0];
-				y = centroid[1];
-				k = .8 / Math.max((b[1][0] - b[0][0]) / gfx.baseMap.width, (b[1][1] - b[0][1]) / gfx.baseMap.height);
-				gfx.baseMap[layer].centered = d
-			} else {
-				x = gfx.baseMap.width / 2;
-				y = gfx.baseMap.height / 2;
-				k = 1;
-				gfx.baseMap[layer].centered = null;
-			}
-
-			// Highlight the new feature
-			gfx.baseMap[layer].states.selectAll("path")
-				.classed("highlighted",function(d) {
-						return d === gfx.baseMap[layer].centered;
-				})
-				.style("stroke-width", 1 / k + "px"); // Keep the border width constant
-
-			//Zoom and re-center the whole map container
-			//Comment `.transition()` and `.duration()` to eliminate gradual zoom
-			gfx.baseMap[layer].svg
-				.transition()
-				.duration(500)
-				.attr("transform","translate(" + gfx.baseMap.width / 2 + "," + gfx.baseMap.height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
 		}
 	},
 	arcs: {
