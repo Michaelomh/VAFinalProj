@@ -135,14 +135,11 @@ path.cell {
   fill: tomato;
 }
 
-.airports path {
-  stroke-width: 1px;
-  stroke: white;
-  opacity: .5;
-}
-
-.airports {
+.airports, .airport-legend .swatch {
   fill: #1821B5;
+  opacity: .5;
+  stroke: white;
+  stroke-width: 1px;
 }
 
 

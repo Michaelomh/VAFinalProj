@@ -54,12 +54,11 @@ var arcsData = [];
 
 var airportLocationHash = {};
 
-var radius = d3.scale.sqrt()
-    .domain([0, 1e6])
-    .range([0, 8]);
+var radius = d3.scaleSqrt()
+    .domain([0, 5e6])
+    .range([0, 12]);
 
-var arcScale = d3.scale
-               .linear()
+var arcScale = d3.scaleLinear()
                .domain([0,100000])
                .range([0,3]);
 
@@ -112,12 +111,12 @@ var gfx = {
 			this.height = 600;
 
 			// Map projection
-			this.projection = d3.geo.albersUsa()
+			this.projection = d3.geoAlbersUsa()
 					.scale(this.width)
 					.translate([this.width/2, this.height/2]); //translate to center the map in view
 
 			// Generate paths based on projection
-			this.path = d3.geo.path()
+			this.path = d3.geoPath()
 					.projection(this.projection);
 
 		},
@@ -285,6 +284,23 @@ var gfx = {
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
           return (typeof d.properties.outgoingPassengers != 'undefined') ? radius(d.properties.outgoingPassengers) : 0;
 				}));
+
+      // add legend
+
+      gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
+        .attr("class", "airport-legend")
+        .attr("transform", "translate(530,40)");
+
+      var airportLegend = d3.legendSize()
+        .scale(radius)
+        .shape('circle')
+        .shapePadding(40)
+        .labelOffset(20)
+        .labelFormat(d3.formatPrefix('.2', 1e6))
+        .orient('horizontal');
+
+      gfx.baseMap[layer].svg.select(".airport-legend")
+        .call(airportLegend);
 		}
 	}
 }
