@@ -58,6 +58,11 @@ var radius = d3.scale.sqrt()
     .domain([0, 1e6])
     .range([0, 8]);
 
+var arcScale = d3.scale
+               .linear()
+               .domain([0,100000])
+               .range([0,3]);
+
 // var path = d3.geo.path().projection(d3.geo.albersUsa());
 
 // function JSONtoGeoJSON(json, latName, lngName, property) {
@@ -177,7 +182,11 @@ var gfx = {
 				.attr('d', function(d) {
 					// console.log(d)
 					return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
-				});
+				})
+        .attr('stroke-width', function(d) {
+          // console.log(d.passengers);
+          return arcScale(d.passengers);
+        });
 
 			// And a circle for each end point
 			// arc_group.append('circle')
