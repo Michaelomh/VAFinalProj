@@ -43,6 +43,9 @@
 // sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
 var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
 
+// sample month (please insert later) = [startMonth, endMonth] CROSS FILTER INPUT **********
+var monthArr = [0,5];
+
 var flightsByDate,
 		flightsByOriginAiports,
 		passengersByOriginAirports,
@@ -146,6 +149,27 @@ var gfx = {
 			// Group for the arcs
 			gfx.baseMap[layer].arcs = gfx.baseMap[layer].svg.append('g')
 					.attr('class','arcs');
+
+			flightsByMonth.filter(monthArr); // INPUT NEEDED FROM SLIDER HERE
+
+			passengersByOriginAirports = flightsByOriginAiports.group().reduceSum(function(d) {
+				return d['PASSENGERS'];
+			});
+
+			passengersByDestAirports = flightsByDestAirports.group().reduceSum(function(d) {
+				return d['PASSENGERS'];
+			});
+      var OriDestAirportsDimension = data.flights.dimension(function(d) {
+        //stringify() and later, parse() to get keyed objects
+        return JSON.stringify ( { originID: d["ORIGIN_AIRPORT_ID"], destID: d["DEST_AIRPORT_ID"] } ) ;
+      });
+      // console.log(OriDestAirportsDimension);
+      OriDestAirportsGroup = OriDestAirportsDimension.group().reduceSum(function(d) {
+        return d['PASSENGERS'];
+      });
+      OriDestAirportsGroup.all().forEach(function(d) {
+        d.key = JSON.parse(d.key);
+      });
 
       airportsToLngLat(OriDestAirportsGroup.all(), airportLocationHash);
 			// We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
@@ -327,26 +351,10 @@ var data = {
 				if (error) return console.log(error); // Unknown error, check the console
 				// Store flights on the data object for reference later
 				data.flights = crossfilter(data.transform.addDate(flights));
+				flightsByMonth = data.flights.dimension(function(d) {return d['MONTH']});
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
-				passengersByOriginAirports = flightsByOriginAiports.group().reduceSum(function(d) {
-					return d['PASSENGERS'];
-				});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
-				passengersByDestAirports = flightsByDestAirports.group().reduceSum(function(d) {
-					return d['PASSENGERS'];
-				});
-        var OriDestAirportsDimension = data.flights.dimension(function(d) {
-          //stringify() and later, parse() to get keyed objects
-          return JSON.stringify ( { originID: d["ORIGIN_AIRPORT_ID"], destID: d["DEST_AIRPORT_ID"] } ) ;
-        });
-        // console.log(OriDestAirportsDimension);
-        OriDestAirportsGroup = OriDestAirportsDimension.group().reduceSum(function(d) {
-          return d['PASSENGERS'];
-        });
-        OriDestAirportsGroup.all().forEach(function(d) {
-          d.key = JSON.parse(d.key);
-        });
 
 				callback();
 			});
