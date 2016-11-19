@@ -325,8 +325,8 @@ var gfx = {
 						.style("opacity", .8);
 					gfx.baseMap[layer].tooltip.html(
 							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
-							'Outgoing Passengers: ' + (numberFormat(d.properties.outgoingPassengers)).toString() + "<br/>" +
-							'Incoming Passengers: ' + (numberFormat(d.properties.incomingPassengers)).toString())
+							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "<br/>" +
+							'Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers))
             .style("left", (d3.event.pageX + 15) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
 				}).on("mouseout", function(d) {
