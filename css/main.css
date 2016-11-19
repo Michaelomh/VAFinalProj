@@ -126,13 +126,19 @@ path.cell {
 .arcs path {
   /*stroke-width: 1px;*/
   opacity: 0.7;
-  stroke: tomato;
-  pointer-events: none;
+  stroke: #FF6700;
+  pointer-events: all;
   fill: none;
   display: none;
+  cursor: pointer;
 }
+
+.arcs path:hover {
+  stroke: #004E98
+}
+
 .arcs .great-arc-end{
-  fill: tomato;
+  fill: #FF6700;
 }
 
 .airports {
@@ -140,23 +146,42 @@ path.cell {
 }
 
 .airports, .airport-legend .swatch {
-  fill: #1821B5;
-  opacity: .5;
+  fill: #3A6EA5;
+  opacity: 0.8;
   stroke: white;
   stroke-width: 1px;
 }
 
-div.tooltip {
-    position: absolute;
-    text-align: left;
-    padding: 5px;
-    background: white;
-    border: 0px;
-    border-radius: 3px;
-    pointer-events: none;
+.airport:hover {
+  fill: #004E98;
 }
 
-.airport-name {
+.airport.selected {
+  fill: #004E98;
+  opacity: 1;
+}
+
+div.airport-tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 5px;
+  background: white;
+  border: 0px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+div.arc-tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 5px;
+  background: white;
+  border: 0px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.airport-name, .arc-name {
   font-size: 14px;
   font-weight: 700;
   margin: 0;

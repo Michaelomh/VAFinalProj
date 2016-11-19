@@ -55,9 +55,12 @@ var flightsByDate,
 
 var numberFormat = d3.formatPrefix('.2', 1e6);
 
+var arcNumberFormat = d3.format(',');
+
 var arcsData = [];
 
 var airportLocationHash = {};
+var airportNameHash = {};
 
 var radius = d3.scaleSqrt()
     .domain([0, 5e6])
@@ -97,7 +100,8 @@ var gfx = {
 			gfx.baseMap.bake(layer);
       gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
-			gfx.tooltip.bake(layer);
+			gfx.airportTooltip.bake(layer);
+			gfx.arcTooltip.bake(layer);
 		}
 	},
 	baseMap: {
@@ -182,7 +186,20 @@ var gfx = {
         .attr('stroke-width', function(d) {
           // console.log(d.passengers);
           return arcScale(d.passengers);
-        });
+        }).on("mouseover", function(d) {
+				gfx.baseMap[layer].arcTooltip.transition()
+					.duration(200)
+					.style("opacity", .8);
+				gfx.baseMap[layer].arcTooltip.html(
+						'<p class="arc-name">From ' + airportNameHash[d.originID] + "</br>" + "To " + airportNameHash[d.destID] + "</p>" +
+						"Passengers: " + arcNumberFormat(d.passengers) )
+	        .style("left", (d3.event.pageX + 15) + "px")
+	        .style("top", (d3.event.pageY - 28) + "px");
+				}).on("mouseout", function(d) {
+		      gfx.baseMap[layer].arcTooltip.transition()
+		      	.duration(500)
+		        .style("opacity", 0);
+		    });
 
 			// And a circle for each end point
 			// arc_group.append('circle')
@@ -307,18 +324,20 @@ var gfx = {
 					// toggle visiblity of lines
 					var airportID = d.properties.airportID;
 					$( ".great-arc-group[oriAirport="+ airportID +"] path" ).toggle();
+					// toggle class to change fill
+					d3.select(this).classed("selected", !d3.select(this).classed("selected"));
 				}).on("mouseover", function(d) {
-					gfx.baseMap[layer].tooltip.transition()
+					gfx.baseMap[layer].airportTooltip.transition()
 						.duration(200)
 						.style("opacity", .8);
-					gfx.baseMap[layer].tooltip.html(
+					gfx.baseMap[layer].airportTooltip.html(
 							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
 							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "<br/>" +
 							'Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers))
             .style("left", (d3.event.pageX + 15) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
 				}).on("mouseout", function(d) {
-          gfx.baseMap[layer].tooltip.transition()
+          gfx.baseMap[layer].airportTooltip.transition()
           	.duration(500)
             .style("opacity", 0);
         });
@@ -341,10 +360,17 @@ var gfx = {
         .call(airportLegend);
 		}
 	},
-	tooltip: {
+	airportTooltip: {
 		bake: function(layer) {
-			gfx.baseMap[layer].tooltip = d3.select("body").append('div')
-				.attr("class", "tooltip")
+			gfx.baseMap[layer].airportTooltip = d3.select("body").append('div')
+				.attr("class", "airport-tooltip")
+				.style("opacity", 0);
+		}
+	},
+	arcTooltip: {
+		bake: function(layer) {
+			gfx.baseMap[layer].arcTooltip = d3.select("body").append('div')
+				.attr("class", "arc-tooltip")
 				.style("opacity", 0);
 		}
 	}
@@ -383,12 +409,13 @@ var data = {
 		airports: function(callback) {
 			d3.json('data/us-airports.json', function(error, airports) {
 				if (error) return console.log(error);
-
-        //create airportLocationHash
+        //create airport location hash and airport property hash
         airports.features.forEach(function(airport) {
           var airportID = airport.properties.airportID;
-          airportLocationHash[airportID] = airport.geometry.coordinates;
+          var airportName = airport.properties.displayAirportName;
           // coordinates are in Lng,Lat
+          airportLocationHash[airportID] = airport.geometry.coordinates;
+          airportNameHash[airportID] = airportName;
         });
 
 				// store airports on data object for reference later
@@ -422,6 +449,3 @@ var init = {
 }
 
 init.go();
-// Things to do:
-// figure out arcs thingy
-// add circles that correspond to incoming and outgoing flights
