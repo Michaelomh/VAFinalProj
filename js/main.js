@@ -41,10 +41,10 @@
 // var centroidsHash = {};
 
 // sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
-var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
+// var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
 
 // sample month (please insert later) = [startMonth, endMonth] CROSS FILTER INPUT **********
-var monthArr = [0,5];
+var monthArr = [1,12];
 
 var flightsByDate,
 		flightsByOriginAiports,
@@ -82,6 +82,8 @@ function airportsToLngLat(arr, hash) {
     objToPush.sourceLocation = hash[originID];
     objToPush.targetLocation = hash[destID];
     objToPush.passengers = value;
+    objToPush.originID = originID;
+    objToPush.destID = destID;
     arcsData.push(objToPush);
   }
   console.log(arcsData);
@@ -176,7 +178,9 @@ var gfx = {
 			var arc_group = gfx.baseMap[layer].arcs.selectAll('.great-arc-group')
 					.data(arcsData).enter()
 						.append('g')
-						.classed('great-arc-group', true);
+						.classed('great-arc-group', true)
+		        .attr('oriAirport', function(d) { return d.originID; })
+        		.attr('destAirport', function(d) { return d.destID; });
 
 			// In each group, create a path for each source/target pair.
 			arc_group.append('path')
