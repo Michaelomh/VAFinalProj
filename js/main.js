@@ -323,7 +323,7 @@ var data = {
 			});
 		},
 		flights: function(callback){
-			d3.csv('data/2016-flights.csv', function(error, flights){
+			d3.csv('data/2015-flights.csv', function(error, flights){
 				if (error) return console.log(error); // Unknown error, check the console
 				// Store flights on the data object for reference later
 				data.flights = crossfilter(data.transform.addDate(flights));
