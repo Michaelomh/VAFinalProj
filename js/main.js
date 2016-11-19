@@ -449,3 +449,6 @@ var init = {
 }
 
 init.go();
+
+// add slider for adjusting passenger range to filter airports
+// add a dropdown to search for airports quickly
