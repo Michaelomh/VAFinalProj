@@ -16,13 +16,13 @@ var innerHeight = outerHeight - margin.top - margin.bottom;
 
 //svg initalisation
 var monthView = d3.select("#monthView").insert("monthView")
-    .attr("width", w)
-    .attr("height", h);
+    .attr("width", innerWidth)
+    .attr("height", innerHeight);
 
 //scaling variables
-var scaleLinear = d3.scale.linear()
+var scaleLinear = d3.scaleLinear()
     .domain([1, 12])
-    .range([0, w]);
+    .range([0, innerWidth]);
 
 //Loading data points
 var dataset; //for top K airports
@@ -118,19 +118,23 @@ function numberWithCommas(num) {
     });
 }
 
-var scale = d3.scale.linear()
+var scale = d3.scaleLinear()
     .domain([1, 12]) // Data space
     .range([3, 900]); // Pixel space
 
 
-var MonthViewXscale = d3.scale.ordinal()
+var MonthViewXaxis = d3.scaleLinear()
+    .domain([1, 12])
+    .range([20, 920]);
+
+var MonthViewXscale = d3.scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
     .range(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
 
 
 var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .offset([-10, 0])
+    .offset([150, 0])
     .html(function (data) {
         var toReturn = "<div style=\"text-align:center;\"><b>Year</b>: 2015<br>";
         toReturn += "<b>Month</b>: " + data + "<br>";
@@ -180,7 +184,6 @@ var svg = d3.select("#monthView").append("svg")
     .attr("width", outerWidth)
     .attr("height", outerHeight);
 
-
 svg.call(tip);
 
 function render(data) {
@@ -190,17 +193,15 @@ function render(data) {
     var rects = svg.selectAll("rect").data(data);
 
     // Enter
-    rects.enter().append("rect")
-        .attr("y", 100)
+    rects.enter()
+        .append("rect")
+        .attr("y", 70)
         .attr("width", 70)
         .attr("height", 70)
         .attr("fill", "Blue")
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide)
-        .attr("class", "monthView");
-
-    // Update
-    rects
+        .attr("class", "monthView")
         .attr("x", scale)
         .attr("id", MonthViewXscale);
 
@@ -212,25 +213,171 @@ function render(data) {
 
     //Add SVG Text Element Attributes
     var textLabels = text
-        .attr("y", 200)
+        .attr("y", 50)
         .text(function (data) {
-            return data;
+            return convertMonth(data)
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "20px")
         .attr("fill", "black");
-    
-    text.attr("x", scale);
+
+    text.attr("x", MonthViewXaxis);
 
 
 }
 
 render([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 
+function convertMonth(x) {
+    var toReturn = "";
+
+    switch (x) {
+    case 1:
+        toReturn = "Jan"
+        break;
+    case 2:
+        toReturn = "Feb"
+        break;
+    case 3:
+        toReturn = "Mar"
+        break;
+    case 4:
+        toReturn = "Apr"
+        break;
+    case 5:
+        toReturn = "May"
+        break;
+    case 6:
+        toReturn = "Jun"
+        break;
+    case 7:
+        toReturn = "Jul"
+        break;
+    case 8:
+        toReturn = "Aug"
+        break;
+    case 9:
+        toReturn = "Sep"
+        break;
+    case 10:
+        toReturn = "Oct"
+        break;
+    case 11:
+        toReturn = "Nov"
+        break;
+    case 12:
+        toReturn = "Dec"
+        break;
+    }
+    return toReturn;
+}
+
+//Slider
+var skipSlider = document.getElementById('skipstep');
+
+noUiSlider.create(skipSlider, {
+    range: {
+        'min': 0,
+        '9.1%': 1,
+        '18.2%': 2,
+        '27.3%': 3,
+        '36.4%': 4,
+        '45.5%': 5,
+        '54.6%': 6,
+        '63.6%': 7,
+        '72.7%': 8,
+        '81.8%': 9,
+        '91%': 10,
+        'max': 11
+    },
+    behaviour: 'drag',
+    snap: true,
+    start: [0, 110]
+});
+
+
+skipSlider.noUiSlider.on('update', function (values, handle) {
+    var start = Math.floor(values[0]);
+    var end = Math.floor(values[1]);
+    var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var monthSelected = [];
+    for (var i = start; i < end + 1; i++) {
+        monthSelected.push(monthArray[i]);
+    }
+    console.log(monthSelected);
+
+    if (monthSelected.length === 12) {
+        $("#selectedMonth").text("All");
+    } else {
+        var toPrint = ""
+        for (var i = 0; i < monthSelected.length; i++) {
+            toPrint += monthSelected[i];
+            toPrint += ", "
+        }
+        $("#selectedMonth").text(toPrint.substr(0,toPrint.length-2));
+    }
+
+
+
+});
+
+
 $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").click(function (event) {
-    $("#selectedMonth").text("Selected Month: " + event.target.id);
+    var selectedEvent = event.target.id;
+    switch (selectedEvent) {
+    case "Jan":
+        skipSlider.noUiSlider.set([0, 0]);
+        $("#selectedMonth").text("Jan");
+        break;
+    case "Feb":
+        skipSlider.noUiSlider.set([1, 1]);
+        $("#selectedMonth").text("Feb");
+        break;
+    case "Mar":
+        skipSlider.noUiSlider.set([2, 2]);
+        $("#selectedMonth").text("Mar");
+        break;
+    case "Apr":
+        skipSlider.noUiSlider.set([3, 3]);
+        $("#selectedMonth").text("Apr");
+        break;
+    case "May":
+        skipSlider.noUiSlider.set([4, 4]);
+        $("#selectedMonth").text("May");
+        break;
+    case "Jun":
+        skipSlider.noUiSlider.set([5, 5]);
+        $("#selectedMonth").text("Jun");
+        break;
+    case "Jul":
+        skipSlider.noUiSlider.set([6, 6]);
+        $("#selectedMonth").text("Jul");
+        break;
+    case "Aug":
+        skipSlider.noUiSlider.set([7, 7]);
+        $("#selectedMonth").text("Aug");
+        break;
+    case "Sep":
+        skipSlider.noUiSlider.set([8, 8]);
+        $("#selectedMonth").text("Sep");
+        break;
+    case "Oct":
+        skipSlider.noUiSlider.set([9, 9]);
+        $("#selectedMonth").text("Oct");
+        break;
+    case "Nov":
+        skipSlider.noUiSlider.set([10, 10]);
+        $("#selectedMonth").text("Nov");
+        break;
+    case "Dec":
+        skipSlider.noUiSlider.set([11, 11]);
+        $("#selectedMonth").text("Dec");
+        break;
+    }
+
 });
 
 $("#resetMonth").click(function () {
-    $("#selectedMonth").text("Selected Month: Nil ");
+    skipSlider.noUiSlider.set([0, 11]);
+    $("#selectedMonth").text("All");
 });

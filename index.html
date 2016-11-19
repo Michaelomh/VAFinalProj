@@ -16,6 +16,7 @@
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/dc.css" />
+    <link rel="stylesheet" type="text/css" href="js/nouislider.css" />
     <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
 
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script> -->
@@ -23,18 +24,25 @@
     <script type="text/javascript" src="js/crossfilter.js"></script>
     <!-- <script src="js/dc.js"></script> -->
     <script type="text/javascript" src="js/lysenko-interval-tree.js"></script>
-    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script src="js/d3-tip.js"></script>
 
 </head>
+<style>
+    .noUi-background {
+        background-color: black;
+    }
+</style>
 
 <body>
     <div class="col-xs-12">
         <!-- cross filter -->
+        <div id="skipstep" style="width: 900px; margin: 50px auto 0px auto;">
+        </div>
         <div id="monthView">
 
         </div>
         <div style="width: 980px;margin: 0px auto;">
-            <span id="selectedMonth">Selected Month: Nil</span>
+            Selected Month: <span id="selectedMonth">Nil</span>
             <span>&nbsp;&nbsp;&nbsp;</span>
             <a id="resetMonth" style="cursor:pointer;">reset</a>
         </div>
@@ -54,15 +62,21 @@
             <p id="stateFrom"></p>
             <p id="stateTo"></p>-->
 </body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
-        <script src="js/vendor/crossfilter.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.16.0/d3-legend.js"></script>
-        <!-- <script src="js/vendor/dc-1.7.5.min.js"></script> -->
-        <script src="data/states-hash.json"></script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-<script src="js/main2.js"></script>
+<footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')
+    </script>
+    <script src="js/vendor/crossfilter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.16.0/d3-legend.js"></script>
+    <!-- <script src="js/vendor/dc-1.7.5.min.js"></script> -->
+    <script src="data/states-hash.json"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/main2.js"></script>
+    <script src="js/main3.js"></script>
+    <script src="js/nouislider.js"></script>
+</footer>
 
 
 </html>
