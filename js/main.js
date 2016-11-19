@@ -91,17 +91,6 @@ function airportsToLngLat(arr, hash) {
   console.log(arcsData);
 }
 
-// function zoomed() {
-//   gfx.baseMap.projection.translate(d3.event.translate).scale(d3.event.scale);
-//   g.selectAll("path").attr("d", path);
-// }
-
-// var zoom = d3.behavior.zoom()
-//     .translate(gfx.baseMap.projection.translate())
-//     .scale(gfx.baseMap.projection.scale())
-//     .scaleExtent([height, 8 * height])
-//     .on("zoom", zoomed);
-
 var gfx = {
 	viz: {
 		draw: function(layer){
@@ -142,11 +131,10 @@ var gfx = {
 					.attr('class','states');
 			//Create a path for each map feature in the data
 			this[layer].states.selectAll('path')
-				.data(data.baseMapGeometry.features) //
+				.data(data.baseMapGeometry.features)
 				.enter()
 				.append('path')
 				.attr('d', this.path);
-				// .on('click', function(d,i) { gfx.baseMap.zoom(d,i,layer) });
 		}
 	},
 	arcs: {
