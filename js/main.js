@@ -108,13 +108,13 @@ var gfx = {
 		setValues: function(){
 			// These values are shared among all instances of our basemap
 			// Map dimensions (in pixels)
-			this.width = 1080;
+			this.width = 1024;
 			this.height = 600;
 
 			// Map projection
 			this.projection = d3.geoAlbersUsa()
-					.scale(this.width)
-					.translate([this.width/2, this.height/2]); //translate to center the map in view
+					.scale(this.width*1)
+					.translate([this.width/2-100, this.height/2]); //translate to center the map in view
 
 			// Generate paths based on projection
 			this.path = d3.geoPath()
@@ -346,7 +346,7 @@ var gfx = {
 
       gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
         .attr("class", "airport-legend")
-        .attr("transform", "translate("+ (gfx.baseMap.width - 400) +",20)");
+        .attr("transform", "translate("+ (gfx.baseMap.width - 500) +",20)");
 
       var airportLegend = d3.legendSize()
         .scale(radius)
