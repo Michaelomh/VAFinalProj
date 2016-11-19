@@ -103,7 +103,6 @@ svg {
 .states path {
  fill: #ccc;
  stroke: #fff;
- cursor: pointer;
 }
 
 path.arc {
@@ -126,22 +125,67 @@ path.cell {
 
 .arcs path {
   /*stroke-width: 1px;*/
-  opacity: .1;
-  stroke: tomato;
-  pointer-events: none;
+  opacity: 0.7;
+  stroke: #FF6700;
+  pointer-events: all;
   fill: none;
+  display: none;
+  cursor: pointer;
 }
+
+.arcs path:hover {
+  stroke: #004E98
+}
+
 .arcs .great-arc-end{
-  fill: tomato;
+  fill: #FF6700;
+}
+
+.airports {
+  cursor: pointer;
 }
 
 .airports, .airport-legend .swatch {
-  fill: #1821B5;
-  opacity: .5;
+  fill: #3A6EA5;
+  opacity: 0.8;
   stroke: white;
   stroke-width: 1px;
 }
 
+.airport:hover {
+  fill: #004E98;
+}
+
+.airport.selected {
+  fill: #004E98;
+  opacity: 1;
+}
+
+div.airport-tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 5px;
+  background: white;
+  border: 0px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+div.arc-tooltip {
+  position: absolute;
+  text-align: left;
+  padding: 5px;
+  background: white;
+  border: 0px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.airport-name, .arc-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
 
 
 
