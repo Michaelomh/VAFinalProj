@@ -59,7 +59,7 @@ var airportLocationHash = {};
 
 var radius = d3.scaleSqrt()
     .domain([0, 5e6])
-    .range([0, 12]);
+    .range([0, 15]);
 
 var arcScale = d3.scaleLinear()
                .domain([0,100000])

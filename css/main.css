@@ -103,7 +103,6 @@ svg {
 .states path {
  fill: #ccc;
  stroke: #fff;
- cursor: pointer;
 }
 
 path.arc {
@@ -134,6 +133,10 @@ path.cell {
 }
 .arcs .great-arc-end{
   fill: tomato;
+}
+
+.airports {
+  cursor: pointer;
 }
 
 .airports, .airport-legend .swatch {
