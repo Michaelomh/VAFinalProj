@@ -53,6 +53,8 @@ var flightsByDate,
 		passengersByDestAirports,
     OriDestAirportsGroup;
 
+var numberFormat = d3.formatPrefix('.2', 1e6);
+
 var arcsData = [];
 
 var airportLocationHash = {};
@@ -106,6 +108,7 @@ var gfx = {
 			gfx.baseMap.bake(layer);
       gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
+			gfx.tooltip.bake(layer);
 		}
 	},
 	baseMap: {
@@ -316,7 +319,21 @@ var gfx = {
 					// toggle visiblity of lines
 					var airportID = d.properties.airportID;
 					$( ".great-arc-group[oriAirport="+ airportID +"] path" ).toggle();
-				});
+				}).on("mouseover", function(d) {
+					gfx.baseMap[layer].tooltip.transition()
+						.duration(200)
+						.style("opacity", .8);
+					gfx.baseMap[layer].tooltip.html(
+							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
+							'Outgoing Passengers: ' + (numberFormat(d.properties.outgoingPassengers)).toString() + "<br/>" +
+							'Incoming Passengers: ' + (numberFormat(d.properties.incomingPassengers)).toString())
+            .style("left", (d3.event.pageX + 15) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+				}).on("mouseout", function(d) {
+          gfx.baseMap[layer].tooltip.transition()
+          	.duration(500)
+            .style("opacity", 0);
+        });
 
       // add legend
 
@@ -329,11 +346,18 @@ var gfx = {
         .shape('circle')
         .shapePadding(40)
         .labelOffset(20)
-        .labelFormat(d3.formatPrefix('.2', 1e6))
+        .labelFormat(numberFormat)
         .orient('horizontal');
 
       gfx.baseMap[layer].svg.select(".airport-legend")
         .call(airportLegend);
+		}
+	},
+	tooltip: {
+		bake: function(layer) {
+			gfx.baseMap[layer].tooltip = d3.select("body").append('div')
+				.attr("class", "tooltip")
+				.style("opacity", 0);
 		}
 	}
 }

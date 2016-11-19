@@ -146,6 +146,21 @@ path.cell {
   stroke-width: 1px;
 }
 
+div.tooltip {
+    position: absolute;
+    text-align: left;
+    padding: 5px;
+    background: white;
+    border: 0px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.airport-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
 
 
 
