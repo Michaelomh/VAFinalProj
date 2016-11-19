@@ -112,7 +112,7 @@ var gfx = {
 		setValues: function(){
 			// These values are shared among all instances of our basemap
 			// Map dimensions (in pixels)
-			this.width = 900;
+			this.width = 1080;
 			this.height = 600;
 
 			// Map projection
@@ -216,7 +216,7 @@ var gfx = {
 						targetXY = gfx.baseMap.projection( targetLngLat );
 
 				// Comment this out for production, useful to see if you have any null lng/lat values
-				if (!targetXY) console.log("target not in projection", d, targetLngLat, targetXY)
+				// if (!targetXY) console.log("target not in projection", d, targetLngLat, targetXY)
 
         if (targetXY && sourceXY) {
           var sourceX = sourceXY[0],
@@ -311,13 +311,18 @@ var gfx = {
 				.attr("class", "airport")
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
           return (typeof d.properties.outgoingPassengers != 'undefined') ? radius(d.properties.outgoingPassengers) : 0;
-				}));
+				}))
+				.on("click", function(d) {
+					// toggle visiblity of lines
+					var airportID = d.properties.airportID;
+					$( ".great-arc-group[oriAirport="+ airportID +"] path" ).toggle();
+				});
 
       // add legend
 
       gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
         .attr("class", "airport-legend")
-        .attr("transform", "translate(530,40)");
+        .attr("transform", "translate("+ (gfx.baseMap.width - 400) +",20)");
 
       var airportLegend = d3.legendSize()
         .scale(radius)
