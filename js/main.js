@@ -18,8 +18,8 @@ var airportLocationHash = {};
 var airportNameHash = {};
 
 var radius = d3.scaleSqrt()
-    .domain([0, 5e6])
-    .range([0, 15]);
+    // .domain([0, 5e6])
+    .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
                .domain([0,100000])
@@ -271,6 +271,9 @@ var gfx = {
         }
 				return airport;
 			});
+
+			// set domain for radius
+			radius.domain([0, d3.max(data.airports.features, function(d) {return d.properties.outgoingPassengers})]);
       //add symbols for outgoing passsengers
 			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
 				.data(data.airports.features)
