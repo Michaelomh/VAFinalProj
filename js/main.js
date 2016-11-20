@@ -105,7 +105,6 @@ var gfx = {
 			if (monthArr[0] !== monthArr[1]) {
 				flightsByMonth.filter(monthArr);
 			} else {
-				console.log(monthArr[0])
 				flightsByMonth.filterExact(monthArr[0]);
 			}
 
@@ -385,7 +384,7 @@ var data = {
 				if (error) return console.log(error); // Unknown error, check the console
 				// Store flights on the data object for reference later
 				data.flights = crossfilter(data.transform.addDate(flights));
-				flightsByMonth = data.flights.dimension(function(d) {return d['MONTH']});
+				flightsByMonth = data.flights.dimension(function(d) {return +d['MONTH']});
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
@@ -438,6 +437,5 @@ var init = {
 init.go();
 
 // something is wrong with the arcs - doesnt show up for some when airport detail shows flights
-// BUG when february is chosen - likely to be crossfilter problem
 // add slider for adjusting passenger range to filter airports
 // add a dropdown to search for airports quickly
