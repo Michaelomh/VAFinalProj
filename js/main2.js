@@ -1,7 +1,7 @@
 //standard attributes
 
 var outerWidth = 980;
-var outerHeight = 200;
+var outerHeight = 150;
 var margin = {
     left: 30,
     top: 100,
@@ -11,6 +11,7 @@ var margin = {
 
 var innerWidth = outerWidth - margin.left - margin.right;
 var innerHeight = outerHeight - margin.top - margin.bottom;
+
 
 //colour attributes
 
@@ -27,6 +28,10 @@ var scaleLinear = d3.scaleLinear()
 //Loading data points
 var dataset; //for top K airports
 
+var colors = ["#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
+var buckets = 6;
+var monthPassengers = [16705222, 15327531, 16452608, 16984795, 14403943, 15694134, 13345572, 15025450, 17442945, 18454087, 19370589,16692077];
+
 var jan = 0;
 var feb = 0;
 var mar = 0;
@@ -42,7 +47,9 @@ var dec = 0;
 
 var num_passengers = 0;
 
-d3.csv('data/2016-flights.csv', function (data) {
+d3.csv('data/2015-flights.csv', function (data) {
+    dataset = data;
+    console.log(dataset);
     data.forEach(function (d) {
         switch (d.MONTH) {
         case "1":
@@ -84,6 +91,18 @@ d3.csv('data/2016-flights.csv', function (data) {
         }
 
     });
+    /*console.log(jan);
+    console.log(feb);
+    console.log(mar);
+    console.log(apr);
+    console.log(may);
+    console.log(jun);
+    console.log(jul);
+    console.log(aug);
+    console.log(sep);
+    console.log(oct);
+    console.log(nov);
+    console.log(dec);*/
     jan = numberWithCommas(jan);
     feb = numberWithCommas(feb);
     mar = numberWithCommas(mar);
@@ -96,18 +115,6 @@ d3.csv('data/2016-flights.csv', function (data) {
     oct = numberWithCommas(oct);
     nov = numberWithCommas(nov);
     dec = numberWithCommas(dec);
-    /*    console.log("jan = " + jan);
-        console.log("feb = " + feb);
-        console.log("mar = " + mar);
-        console.log("apr = " + apr);
-        console.log("may = " + may);
-        console.log("jun = " + jun);
-        console.log("jul = " + jul);
-        console.log("aug = " + aug);
-        console.log("sep = " + sep);
-        console.log("oct = " + oct);
-        console.log("nov = " + nov);
-        console.log("dec = " + dec);*/
 });
 
 function numberWithCommas(num) {
@@ -130,6 +137,10 @@ var MonthViewXaxis = d3.scaleLinear()
 var MonthViewXscale = d3.scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
     .range(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
+
+var colorScale = d3.scaleQuantile()
+    .domain([13345572, 19370589])
+    .range(colors);
 
 
 var tip = d3.tip()
@@ -186,9 +197,7 @@ var svg = d3.select("#monthView").append("svg")
 
 svg.call(tip);
 
-function render(data) {
-    console.log(data);
-
+function render(data) { 
     // Bind data
     var rects = svg.selectAll("rect").data(data);
 
@@ -198,12 +207,16 @@ function render(data) {
         .attr("y", 70)
         .attr("width", 70)
         .attr("height", 70)
-        .attr("fill", "Blue")
+        /*.attr("fill", colors[0])*/
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide)
         .attr("class", "monthView")
         .attr("x", scale)
-        .attr("id", MonthViewXscale);
+        .attr("id", MonthViewXscale)
+        .style("fill", function (d) {
+        /*console.log(colorScale(monthPassengers[d-1]));*/
+        return colorScale(monthPassengers[d-1]);
+        });
 
     //Add the SVG Text Element to the svgContainer
     var text = svg.selectAll("text")
@@ -304,7 +317,8 @@ skipSlider.noUiSlider.on('update', function (values, handle) {
     for (var i = start; i < end + 1; i++) {
         monthSelected.push(monthArray[i]);
     }
-    console.log(monthSelected);
+    console.log(monthArr);
+    /*console.log(monthSelected);*/
 
     if (monthSelected.length === 12) {
         $("#selectedMonth").text("All");
@@ -314,9 +328,13 @@ skipSlider.noUiSlider.on('update', function (values, handle) {
             toPrint += monthSelected[i];
             toPrint += ", "
         }
-        $("#selectedMonth").text(toPrint.substr(0,toPrint.length-2));
+        $("#selectedMonth").text(toPrint.substr(0, toPrint.length - 2));
     }
-
+    
+    //PUT THE DRAWING PART HERE.
+    monthArr = [start+1,end+1]
+    //gfx.viz.draw("main");
+    console.log(monthArr);
 
 
 });
