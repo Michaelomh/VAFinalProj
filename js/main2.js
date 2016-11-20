@@ -330,13 +330,11 @@ skipSlider.noUiSlider.on('set', function (values, handle) {
         }
         $("#selectedMonth").text(toPrint.substr(0, toPrint.length - 2));
     }
-    
-    //PUT THE DRAWING PART HERE.
+
     monthArr = [start+1,end+1]
+    // redraw map
     gfx.viz.redraw("main");
-    console.log(monthArr);
-
-
+    // console.log(monthArr);
 });
 
 

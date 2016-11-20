@@ -168,13 +168,6 @@ var gfx = {
 		  arcsData = [];
 
 			arc_group.exit().remove();
-			// And a circle for each end point
-			// arc_group.append('circle')
-			// 		.attr('r', 2)
-			// 		.classed('great-arc-end', true)
-			// 	  .attr("transform", function(d) {
-			// 	    return "translate(" + gfx.arcs.lngLatToPoint(d.targetLocation) + ")";
-			// 	  });
 
 		},
 		lngLatToArc: function(d, sourceName, targetName, bend){
