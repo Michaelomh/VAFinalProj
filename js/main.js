@@ -21,7 +21,7 @@ var radius = d3.scaleSqrt()
     .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
-               .range([0,3]);
+               .range([0, 3]);
 
 // input array of originID, destID, value and hash of airports
 function airportsToLngLat(arr, hash) {
@@ -54,6 +54,7 @@ var gfx = {
 			d3.select(".arcs").remove();
 			d3.select(".airports").remove();
 			d3.select(".airport-legend").remove();
+			d3.select(".arc-legend").remove();
 			gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
 		}
@@ -134,6 +135,7 @@ var gfx = {
         		.attr('destAirport', function(d) { return d.destID; });
 
       // dynaimcally set domain for arcs
+      console.log(d3.max(arcsData, function(d) {return d.passengers}));
       arcScale.domain([0, d3.max(arcsData, function(d) {return d.passengers})]);
 
 			// In each group, create a path for each source/target pair.

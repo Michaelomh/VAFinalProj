@@ -133,8 +133,8 @@ path.cell {
 }
 
 .arc-legend .swatch {
+  opacity: 0.7;
   stroke: #FF6700;
-  fill: #FF6700;
   pointer-events: none;
 }
 
