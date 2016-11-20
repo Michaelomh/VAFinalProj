@@ -22,7 +22,7 @@ var radius = d3.scaleSqrt()
     .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
-               .domain([0,100000])
+               // .domain([0,100000])
                .range([0,3]);
 
 // var path = d3.geo.path().projection(d3.geo.albersUsa());
@@ -141,11 +141,14 @@ var gfx = {
 		        .attr('oriAirport', function(d) { return d.originID; })
         		.attr('destAirport', function(d) { return d.destID; });
 
+      // dynaimcally set domain for arcs
+      arcScale.domain([0, d3.max(arcsData, function(d) {return d.passengers})]);
+
 			// In each group, create a path for each source/target pair.
 			arc_group.append('path')
 				.attr('d', function(d) {
 					// console.log(d)
-					return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5); // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+					return d.passengers > 0 ? gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5) : null; // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
 				})
         .attr('stroke-width', function(d) {
           // console.log(d.passengers);
