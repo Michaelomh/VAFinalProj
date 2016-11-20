@@ -1,48 +1,3 @@
-// arcs and tooltips
-// dc-js.github.io/dc.js
-
-// var w = 980,
-//     h = 600;
-
-// var hoverBgColor = '#a5a5a5';
-// var defaultBgColor = '#cccccc';
-// var clickBgColor = '#777';
-
-// var svg = d3.select("#map").insert("svg:svg", "h2")
-//     .attr("width", w)
-//     .attr("height", h);
-
-// var centroidPositions = [];
-
-// var states = svg.append("svg:g")
-//     .attr("id", "states");
-
-// var circles = svg.append("svg:g")
-//     .attr("id", "circles");
-
-// var arcsLayer;
-// var arcData;
-
-// var cells = svg.append("svg:g")
-//     .attr("id", "cells");
-
-// var display = svg.append("text")
-//                 .attr("x", 130)
-//                 .attr("y", h-60)
-//                 .attr("class", "legend")
-//                 .style("fill", "black")
-//                 .text("Select a state");
-
-
-// var chosenStateFrom = "";
-// var chosenStateTo = "";
-// var passengersDisplay;
-// var fareDisplay;
-// var centroidsHash = {};
-
-// sample date (please insert later) = [startDate, endDate] CROSS FILTER INPUT **********
-// var dateArr = [new Date(2010, 0, 1), new Date(2015, 10, 30)];
-
 // sample month (please insert later) = [startMonth, endMonth] CROSS FILTER INPUT **********
 var monthArr = [1,12];
 
@@ -91,7 +46,7 @@ function airportsToLngLat(arr, hash) {
     objToPush.destID = destID;
     arcsData.push(objToPush);
   }
-  console.log(arcsData);
+  // console.log(arcsData);
 }
 
 var gfx = {
@@ -102,6 +57,13 @@ var gfx = {
 			gfx.airports.bake(layer);
 			gfx.airportTooltip.bake(layer);
 			gfx.arcTooltip.bake(layer);
+		},
+		redraw: function(layer) {
+			d3.select(".arcs").remove();
+			d3.select(".airports").remove();
+			d3.select(".airport-legend").remove();
+			gfx.arcs.bake(layer);
+			gfx.airports.bake(layer);
 		}
 	},
 	baseMap: {
@@ -147,7 +109,7 @@ var gfx = {
 			gfx.baseMap[layer].arcs = gfx.baseMap[layer].svg.append('g')
 					.attr('class','arcs');
 
-			flightsByMonth.filter(monthArr); // INPUT NEEDED FROM SLIDER HERE
+			flightsByMonth.filter(monthArr[0] !== monthArr[1] ? monthArr : monthArr[0]); // INPUT NEEDED FROM SLIDER HERE
 
 			passengersByOriginAirports = flightsByOriginAiports.group().reduceSum(function(d) {
 				return d['PASSENGERS'];
@@ -170,6 +132,8 @@ var gfx = {
 
       airportsToLngLat(OriDestAirportsGroup.all(), airportLocationHash);
 			// We're going to have an arc and a circle point, so let's make a separate group for those items to keep things organized
+
+			// console.log('arcsData', arcsData);
 			var arc_group = gfx.baseMap[layer].arcs.selectAll('.great-arc-group')
 					.data(arcsData).enter()
 						.append('g')
@@ -201,6 +165,9 @@ var gfx = {
 		        .style("opacity", 0);
 		    });
 
+		  arcsData = [];
+
+			arc_group.exit().remove();
 			// And a circle for each end point
 			// arc_group.append('circle')
 			// 		.attr('r', 2)
@@ -298,7 +265,7 @@ var gfx = {
       }
 
 			// add outgoingPassengers and incomingPassengers to airportData
-			airportData.features.forEach(function(airport) {
+			data.airports.features.forEach(function(airport) {
 				// console.log(airport);
         var airportID = airport.properties.airportID;
 				var outPassengers = outgoingPassengersHash[airportID];
@@ -312,8 +279,8 @@ var gfx = {
 				return airport;
 			});
       //add symbols for outgoing passsengers
-			gfx.baseMap[layer].airports.selectAll(".airports")
-				.data(airportData.features)
+			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
+				.data(data.airports.features)
 			.enter()
 				.append("path")
 				.attr("class", "airport")
@@ -341,6 +308,8 @@ var gfx = {
           	.duration(500)
             .style("opacity", 0);
         });
+
+    	airports.exit().remove();
 
       // add legend
 

@@ -49,7 +49,7 @@ var num_passengers = 0;
 
 d3.csv('data/2015-flights.csv', function (data) {
     dataset = data;
-    console.log(dataset);
+    // console.log(dataset);
     data.forEach(function (d) {
         switch (d.MONTH) {
         case "1":
@@ -309,7 +309,7 @@ noUiSlider.create(skipSlider, {
 });
 
 
-skipSlider.noUiSlider.on('update', function (values, handle) {
+skipSlider.noUiSlider.on('set', function (values, handle) {
     var start = Math.floor(values[0]);
     var end = Math.floor(values[1]);
     var monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -317,7 +317,7 @@ skipSlider.noUiSlider.on('update', function (values, handle) {
     for (var i = start; i < end + 1; i++) {
         monthSelected.push(monthArray[i]);
     }
-    console.log(monthArr);
+    // console.log(monthArr);
     /*console.log(monthSelected);*/
 
     if (monthSelected.length === 12) {
@@ -333,7 +333,7 @@ skipSlider.noUiSlider.on('update', function (values, handle) {
     
     //PUT THE DRAWING PART HERE.
     monthArr = [start+1,end+1]
-    //gfx.viz.draw("main");
+    gfx.viz.redraw("main");
     console.log(monthArr);
 
 
