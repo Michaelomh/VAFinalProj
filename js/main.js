@@ -10,7 +10,7 @@ var flightsByDate,
 
 var numberFormat = d3.formatPrefix('.2', 1e6);
 
-var arcNumberFormat = d3.format(',');
+var arcNumberFormat = d3.formatPrefix(',.1', 1e3);
 
 var arcsData = [];
 
@@ -18,18 +18,10 @@ var airportLocationHash = {};
 var airportNameHash = {};
 
 var radius = d3.scaleSqrt()
-    // .domain([0, 5e6])
     .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
-               // .domain([0,100000])
                .range([0,3]);
-
-// var path = d3.geo.path().projection(d3.geo.albersUsa());
-
-// function JSONtoGeoJSON(json, latName, lngName, property) {
-
-// };
 
 // input array of originID, destID, value and hash of airports
 function airportsToLngLat(arr, hash) {
@@ -172,6 +164,24 @@ var gfx = {
 
 			arc_group.exit().remove();
 
+			// arc legend
+
+			gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
+        .attr("class", "arc-legend")
+        .attr("transform", "translate("+ (gfx.baseMap.width - 720) +",20)");
+
+      var arcLegend = d3.legendSize()
+        .scale(arcScale)
+        .shape('line')
+        .shapeWidth(50)
+        .shapePadding(10)
+        .labelOffset(28)
+        // .labelAlign('start')
+        .labelFormat(arcNumberFormat)
+        .orient('horizontal');
+
+      gfx.baseMap[layer].svg.select(".arc-legend")
+        .call(arcLegend);
 		},
 		lngLatToArc: function(d, sourceName, targetName, bend){
 			// If no bend is supplied, then do the plain square root
@@ -310,16 +320,16 @@ var gfx = {
 
     	airports.exit().remove();
 
-      // add legend
+      // add airport legend
 
       gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
         .attr("class", "airport-legend")
-        .attr("transform", "translate("+ (gfx.baseMap.width - 320) +",20)");
+        .attr("transform", "translate("+ (gfx.baseMap.width - 270) +",20)");
 
       var airportLegend = d3.legendSize()
         .scale(radius)
         .shape('circle')
-        .shapePadding(40)
+        .shapePadding(30)
         .labelOffset(20)
         .labelFormat(numberFormat)
         .orient('horizontal');

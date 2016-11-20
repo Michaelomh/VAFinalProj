@@ -124,13 +124,18 @@ path.cell {
 }*/
 
 .arcs path {
-  /*stroke-width: 1px;*/
   opacity: 0.7;
   stroke: #FF6700;
   pointer-events: all;
   fill: none;
   display: none;
   cursor: pointer;
+}
+
+.arc-legend .swatch {
+  stroke: #FF6700;
+  fill: #FF6700;
+  pointer-events: none;
 }
 
 .arcs path:hover {
