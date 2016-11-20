@@ -102,7 +102,12 @@ var gfx = {
 			gfx.baseMap[layer].arcs = gfx.baseMap[layer].svg.append('g')
 					.attr('class','arcs');
 
-			flightsByMonth.filter(monthArr[0] !== monthArr[1] ? monthArr : monthArr[0]); // INPUT NEEDED FROM SLIDER HERE
+			if (monthArr[0] !== monthArr[1]) {
+				flightsByMonth.filter(monthArr);
+			} else {
+				console.log(monthArr[0])
+				flightsByMonth.filterExact(monthArr[0]);
+			}
 
 			passengersByOriginAirports = flightsByOriginAiports.group().reduceSum(function(d) {
 				return d['PASSENGERS'];
@@ -115,10 +120,11 @@ var gfx = {
         //stringify() and later, parse() to get keyed objects
         return JSON.stringify ( { originID: d["ORIGIN_AIRPORT_ID"], destID: d["DEST_AIRPORT_ID"] } ) ;
       });
-      // console.log(OriDestAirportsDimension);
+      // console.log(OriDestAirportsDimension.top(Infinity));
       OriDestAirportsGroup = OriDestAirportsDimension.group().reduceSum(function(d) {
         return d['PASSENGERS'];
       });
+      // console.log(OriDestAirportsGroup.all());
       OriDestAirportsGroup.all().forEach(function(d) {
         d.key = JSON.parse(d.key);
       });
@@ -135,14 +141,15 @@ var gfx = {
         		.attr('destAirport', function(d) { return d.destID; });
 
       // dynaimcally set domain for arcs
-      console.log(d3.max(arcsData, function(d) {return d.passengers}));
       arcScale.domain([0, d3.max(arcsData, function(d) {return d.passengers})]);
 
 			// In each group, create a path for each source/target pair.
 			arc_group.append('path')
 				.attr('d', function(d) {
 					// console.log(d)
-					return d.passengers > 0 ? gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5) : null; // A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+					// A bend of 5 looks nice and subtle, but this will depend on the length of your arcs and the visual look your visualization requires. Higher number equals less bend.
+					return d.passengers > 0 ? gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5) : null;
+					// return gfx.arcs.lngLatToArc(d, 'sourceLocation', 'targetLocation', 5);
 				})
         .attr('stroke-width', function(d) {
           // console.log(d.passengers);
@@ -273,7 +280,7 @@ var gfx = {
       }
 
 			// add outgoingPassengers and incomingPassengers to airportData
-			data.airports.features.forEach(function(airport) {
+			airportData.features.forEach(function(airport) {
 				// console.log(airport);
         var airportID = airport.properties.airportID;
 				var outPassengers = outgoingPassengersHash[airportID];
@@ -288,10 +295,10 @@ var gfx = {
 			});
 
 			// set domain for radius
-			radius.domain([0, d3.max(data.airports.features, function(d) {return d.properties.outgoingPassengers})]);
+			radius.domain([0, d3.max(airportData.features, function(d) {return d.properties.outgoingPassengers})]);
       //add symbols for outgoing passsengers
 			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
-				.data(data.airports.features)
+				.data(airportData.features)
 			.enter()
 				.append("path")
 				.attr("class", "airport")
@@ -430,5 +437,7 @@ var init = {
 
 init.go();
 
+// something is wrong with the arcs - doesnt show up for some when airport detail shows flights
+// BUG when february is chosen - likely to be crossfilter problem
 // add slider for adjusting passenger range to filter airports
 // add a dropdown to search for airports quickly
