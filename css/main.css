@@ -95,6 +95,9 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+body {
+  font-family: "Helvetica-Neue", Helvetica, Arial, sans-serif;
+}
 svg {
   margin: 0 auto;
   display: inherit;
@@ -339,6 +342,12 @@ input:checked + .toggle-slider:before {
   background: #3A6EA5;
 }
 
+.reset-button {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  width: 90%;
+}
 
 
 /* ==========================================================================
