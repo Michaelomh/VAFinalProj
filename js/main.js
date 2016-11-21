@@ -47,10 +47,12 @@
 var monthArr = [1,12];
 
 var flightsByDate,
-		flightsByOriginAiports,
-		passengersByOriginAirports,
-		flightsByDestAirports,
-		passengersByDestAirports,
+    flightsByOriginAiports,
+    passengersByOriginAirports,
+    flightsByDestAirports,
+    passengersByDestAirports,
+    flightsByOriginState,
+    flightsByDestState,
     OriDestAirportsGroup;
 
 var numberFormat = d3.formatPrefix('.2', 1e6);
@@ -98,7 +100,7 @@ var gfx = {
 	viz: {
 		draw: function(layer){
 			gfx.baseMap.bake(layer);
-      gfx.arcs.bake(layer);
+            gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
 			gfx.airportTooltip.bake(layer);
 			gfx.arcTooltip.bake(layer);
@@ -160,6 +162,7 @@ var gfx = {
         //stringify() and later, parse() to get keyed objects
         return JSON.stringify ( { originID: d["ORIGIN_AIRPORT_ID"], destID: d["DEST_AIRPORT_ID"] } ) ;
       });
+                        
       // console.log(OriDestAirportsDimension);
       OriDestAirportsGroup = OriDestAirportsDimension.group().reduceSum(function(d) {
         return d['PASSENGERS'];
@@ -402,7 +405,9 @@ var data = {
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
-
+                flightsByOriginState = data.flights.dimension(function(d) {return d['ORIGIN_STATE_ABR']});
+                flightsByDestState = data.flights.dimension(function(d) {return d['DEST_STATE_ABR']});
+                
 				callback();
 			});
 		},

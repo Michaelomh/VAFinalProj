@@ -49,7 +49,7 @@
           .attr("x", function (d, i) {
               return i * gridSize;
           })
-        .attr("y", 0)
+          .attr("y", 0)
           .style("text-anchor", "middle")
           .attr("transform", "translate(" + gridSize / 2 + ", -6)")
           .attr("class", function (d) {
@@ -83,11 +83,11 @@
 
                   cards.enter().append("rect")
                       .attr("x", function (d) {
-                      /*console.log((d.hour - 1) * gridSize);*/
+                          /*console.log((d.hour - 1) * gridSize);*/
                           return (d.hour - 1) * gridSize;
                       })
                       .attr("y", function (d) {
-                      /*console.log((d.day - 1) * gridSize);*/
+                          /*console.log((d.day - 1) * gridSize);*/
                           return (d.day - 1) * gridSize;
                       })
                       .attr("rx", 4)
@@ -99,7 +99,7 @@
 
                   cards.transition().duration(1000)
                       .style("fill", function (d) {
-                      console.log(d);
+                          console.log(d);
                           return colorScale(d.value);
                       });
 
@@ -145,3 +145,31 @@
       };
 
       heatmapChart('data/testdata.csv');
+
+
+      console.log(data.flights);
+
+      var OriDestABRGroup
+
+      $(document).ready(function () {
+          setInterval(function () {
+              var OriDestABRDimension = data.flights.dimension(function (d) {
+                  //stringify() and later, parse() to get keyed objects
+                  return JSON.stringify({
+                      originABR: d["ORIGIN_STATE_ABR"],
+                      destABR: d["DEST_STATE_ABR"]
+                  });
+              });
+
+              OriDestABRGroup = OriDestABRDimension.group().reduceSum(function (d) {
+                  return d['PASSENGERS'];
+              });
+              OriDestABRGroup.all().forEach(function (d) {
+                  d.key = JSON.parse(d.key);
+
+              });
+
+              console.log(OriDestABRGroup.all());
+
+          }, 5000);
+      });
