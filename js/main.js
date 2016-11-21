@@ -22,7 +22,10 @@ var arcsData = [];
 var airportLocationHash = {};
 var airportNameHash = {};
 
-var radius = d3.scaleSqrt()
+var outRadius = d3.scaleSqrt()
+    .range([0, 12]);
+
+var inRadius = d3.scaleSqrt()
     .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
@@ -297,27 +300,35 @@ var gfx = {
 				return airport;
 			});
 
-			// set domain for radius
+			// set domain for inRadius and outRadius
 			this.minOutPassengers = 0;
 			this.maxOutPassengers = d3.max(airportData.features, function(d) {return d.properties.outgoingPassengers});
 			this.minInPassengers = 0;
-			this.minInPassengers = d3.max(airportData.features, function(d) {return d.properties.incomingPassengers});
+			this.maxInPassengers = d3.max(airportData.features, function(d) {return d.properties.incomingPassengers});
 			if (outgoingPassengersRange[0] > this.minOutPassengers) {
-				this.minOutPassengers = outgoingPassengersRange[0];
+				this.minOutPassengers = +outgoingPassengersRange[0];
 			}
-			if (outgoingPassengersRange[1] < +this.maxOutPassengers) {
-				this.maxOutPassengers = outgoingPassengersRange[1];
+			if (outgoingPassengersRange[1] < this.maxOutPassengers) {
+				this.maxOutPassengers = +outgoingPassengersRange[1];
 			}
 
-			radius.domain([this.minOutPassengers, this.maxOutPassengers]);
+			if (incomingPassengersRange[0] > this.minInPassengers) {
+				this.minInPassengers = +incomingPassengersRange[0];
+			}
+			if (incomingPassengersRange[1] < this.maxInPassengers) {
+				this.maxInPassengers = +incomingPassengersRange[1];
+			}
+
+			outRadius.domain([this.minOutPassengers, this.maxOutPassengers]);
+			inRadius.domain([this.minInPassengers, this.maxInPassengers]);
       //add symbols for outgoing passsengers
-			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
+			var outAirports = gfx.baseMap[layer].airports.selectAll("airports")
 				.data(airportData.features)
 			.enter()
 				.append("path")
-				.attr("class", "airport")
+				.attr("class", "airport out-airport")
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
-          return (typeof d.properties.outgoingPassengers != 'undefined' && +d.properties.outgoingPassengers > gfx.airports.minOutPassengers && +d.properties.outgoingPassengers < gfx.airports.maxOutPassengers) ? radius(d.properties.outgoingPassengers) : 0;
+          return (typeof d.properties.outgoingPassengers != 'undefined' && +d.properties.outgoingPassengers > gfx.airports.minOutPassengers && +d.properties.outgoingPassengers < gfx.airports.maxOutPassengers) ? outRadius(d.properties.outgoingPassengers) : 0;
 				}))
 				.on("click", function(d) {
 					// toggle visiblity of lines
@@ -341,24 +352,81 @@ var gfx = {
             .style("opacity", 0);
         });
 
-    	airports.exit().remove();
+    	outAirports.exit().remove();
 
-      // add airport legend
+    	//add symbols for incoming passsengers
+			var inAirports = gfx.baseMap[layer].airports.selectAll("airports")
+				.data(airportData.features)
+			.enter()
+				.append("path")
+				.attr("class", "airport in-airport")
+				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
+          return (typeof d.properties.incomingPassengers != 'undefined' && +d.properties.incomingPassengers > gfx.airports.minInPassengers && +d.properties.incomingPassengers < gfx.airports.maxInPassengers) ? inRadius(d.properties.incomingPassengers) : 0;
+				}))
+				.on("click", function(d) {
+					// toggle visiblity of lines
+					var airportID = d.properties.airportID;
+					$( ".great-arc-group[oriAirport="+ airportID +"] path" ).toggle();
+					// toggle class to change fill
+					d3.select(this).classed("selected", !d3.select(this).classed("selected"));
+				}).on("mouseover", function(d) {
+					gfx.baseMap[layer].airportTooltip.transition()
+						.duration(200)
+						.style("opacity", .8);
+					gfx.baseMap[layer].airportTooltip.html(
+							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
+							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "<br/>" +
+							'Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers))
+            .style("left", (d3.event.pageX + 15) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+				}).on("mouseout", function(d) {
+          gfx.baseMap[layer].airportTooltip.transition()
+          	.duration(500)
+            .style("opacity", 0);
+        });
+    	inAirports.exit().remove();
 
-      gfx.baseMap[layer].legend = gfx.baseMap[layer].svg.append('g')
-        .attr("class", "airport-legend")
+      // add outgoing airport legend
+
+      gfx.baseMap[layer].outLegend = gfx.baseMap[layer].svg.append('g')
+        .attr("class", "airport-legend out-airport-legend")
         .attr("transform", "translate("+ (gfx.baseMap.width - 270) +",20)");
 
-      var airportLegend = d3.legendSize()
-        .scale(radius)
+      var outAirportLegend = d3.legendSize()
+        .scale(outRadius)
         .shape('circle')
         .shapePadding(30)
         .labelOffset(20)
         .labelFormat(numberFormat)
         .orient('horizontal');
 
-      gfx.baseMap[layer].svg.select(".airport-legend")
-        .call(airportLegend);
+      gfx.baseMap[layer].svg.select(".out-airport-legend")
+        .call(outAirportLegend);
+
+     	// add incoming airport legend
+      gfx.baseMap[layer].inLegend = gfx.baseMap[layer].svg.append('g')
+        .attr("class", "airport-legend in-airport-legend")
+        .attr("transform", "translate("+ (gfx.baseMap.width - 270) +",20)");
+
+      var inAirportLegend = d3.legendSize()
+        .scale(inRadius)
+        .shape('circle')
+        .shapePadding(30)
+        .labelOffset(20)
+        .labelFormat(numberFormat)
+        .orient('horizontal');
+
+      gfx.baseMap[layer].svg.select(".in-airport-legend")
+        .call(inAirportLegend);
+
+    	if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
+	  			$('.out-airport, .out-airport-legend').hide();
+      		$('.in-airport, .in-airport-legend').show();
+      	} else {
+      		$('.in-airport, .in-airport-legend').hide();
+    			$('.out-airport, .out-airport-legend').show();
+    	};
+
 		}
 	},
 	airportTooltip: {
@@ -380,6 +448,9 @@ var gfx = {
 		  var outPassengerSlider = document.getElementById('outPassengerSlider');
       var outPassengerStart = document.getElementById('outPassengersStart');
       var outPassengerEnd = document.getElementById('outPassengersEnd');
+      var inPassengerSlider = document.getElementById('inPassengerSlider');
+      var inPassengerStart = document.getElementById('inPassengersStart');
+      var inPassengerEnd = document.getElementById('inPassengersEnd');
 
       noUiSlider.create(outPassengerSlider, {
       	start: [0, 5000000],
@@ -404,7 +475,43 @@ var gfx = {
       outPassengerSlider.noUiSlider.on('change', function(values, handle) {
       	outgoingPassengersRange = values;
       	gfx.viz.redraw("main");
-      })
+      });
+
+      noUiSlider.create(inPassengerSlider, {
+      	start: [0, 5000000],
+      	connect: true,
+      	range: {
+      		'min': 0,
+      		'max': 5000000
+      	},
+      	step: 1000
+      	// tooltips: [wNumb({ decimals: 0, thousand: ',' }), wNumb({ decimals: 0, thousand: ',' })]
+      });
+
+      inPassengerSlider.noUiSlider.on('update', function(values, handle) {
+      	if ( handle == 0 ) {
+      		values[handle] == 0 ? inPassengerStart.innerHTML = 0 : inPassengerStart.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
+      	}
+      	if ( handle == 1 ) {
+      		values[handle] == 0 ? inPassengerEnd.innerHTML = 0 : inPassengerEnd.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
+      	}
+      });
+
+      inPassengerSlider.noUiSlider.on('change', function(values, handle) {
+      	incomingPassengersRange = values;
+      	gfx.viz.redraw("main");
+      });
+
+      // add event listener to checkbox
+      $('.toggle-switch input[type=checkbox]').change(function(){
+      	if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
+      		$('.out-airport, .out-airport-legend').hide();
+      		$('.in-airport, .in-airport-legend').show();
+      	} else {
+      		$('.in-airport, .in-airport-legend').hide();
+    			$('.out-airport, .out-airport-legend').show();
+      	}
+	    });
     },
     update: function(min, max, slider) {
     	slider.noUiSlider.updateOptions({

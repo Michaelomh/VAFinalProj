@@ -151,19 +151,48 @@ path.cell {
 }
 
 .airports, .airport-legend .swatch {
-  fill: #3A6EA5;
   opacity: 0.8;
   stroke: white;
   stroke-width: 1px;
 }
 
-.airport:hover {
+.out-airport {
+  fill: #3A6EA5;
+}
+
+.out-airport:hover {
   fill: #004E98;
 }
 
-.airport.selected {
+.out-airport-legend .swatch {
+  fill: #3A6EA5;
+}
+
+.out-airport.selected {
   fill: #004E98;
   opacity: 1;
+}
+
+.in-airport {
+  display: none;
+  fill: #D15500;
+}
+
+.in-airport:hover {
+  fill: #A34200;
+}
+
+.in-airport.selected {
+  fill: #A34200;
+  opacity: 1;
+}
+
+.in-airport-legend {
+  display: none;
+}
+
+.in-airport-legend .swatch {
+  fill: #D15500;
 }
 
 div.airport-tooltip {
@@ -240,16 +269,18 @@ div.arc-tooltip {
 .toggle-slider {
   position: absolute;
   cursor: pointer;
+  border-radius: 4px;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #004E98;
+  background-color: #3A6EA5;
   -webkit-transition: .4s;
   transition: .4s;
 }
 
 .toggle-slider:before {
+  border-radius: 4px;
   position: absolute;
   content: "";
   height: 16px;
@@ -262,7 +293,7 @@ div.arc-tooltip {
 }
 
 input:checked + .toggle-slider {
-  background-color: #ccc;
+  background-color: #D15500;
 }
 
 input:focus + .toggle-slider {
@@ -275,16 +306,9 @@ input:checked + .toggle-slider:before {
   transform: translateX(36px);
 }
 
-/* Rounded sliders */
-.toggle-slider.round {
-  border-radius: 34px;
+.controls-container .noUi-connect {
+  background: #3A6EA5;
 }
-
-.toggle-slider.round:before {
-  border-radius: 50%;
-}
-
-
 
 
 
