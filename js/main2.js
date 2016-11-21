@@ -28,7 +28,7 @@ var scaleLinear = d3.scaleLinear()
 //Loading data points
 var dataset; //for top K airports
 
-var colors = ["#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
+var colors = ["#7acbdc", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
 var buckets = 6;
 var monthPassengers = [16705222, 15327531, 16452608, 16984795, 14403943, 15694134, 13345572, 15025450, 17442945, 18454087, 19370589,16692077];
 

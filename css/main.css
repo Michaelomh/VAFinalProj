@@ -1,10 +1,12 @@
 /*! HTML5 Boilerplate v5.3.0 | MIT License | https://html5boilerplate.com/ */
 
+
 /*
  * What follows is the result of much research on cross-browser styling.
  * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
  * Kroc Camen, and the H5BP dev community and team.
  */
+
 
 /* ==========================================================================
    Base styles: opinionated defaults
@@ -15,6 +17,7 @@ html {
     font-size: 1em;
     line-height: 1.4;
 }
+
 
 /*
  * Remove text-shadow in selection highlight:
@@ -34,6 +37,7 @@ html {
     text-shadow: none;
 }
 
+
 /*
  * A better looking default horizontal rule
  */
@@ -46,6 +50,7 @@ hr {
     margin: 1em 0;
     padding: 0;
 }
+
 
 /*
  * Remove the gap between audio, canvas, iframes,
@@ -62,6 +67,7 @@ video {
     vertical-align: middle;
 }
 
+
 /*
  * Remove default fieldset styles.
  */
@@ -72,6 +78,7 @@ fieldset {
     padding: 0;
 }
 
+
 /*
  * Allow only vertical resizing of textareas.
  */
@@ -79,6 +86,7 @@ fieldset {
 textarea {
     resize: vertical;
 }
+
 
 /* ==========================================================================
    Browser Upgrade Prompt
@@ -91,31 +99,33 @@ textarea {
     padding: 0.2em 0;
 }
 
+
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
 
 svg {
-  margin: 0 auto;
-  display: inherit;
+    margin: 0 auto;
+    display: inherit;
 }
 
 .states path {
- fill: #ccc;
- stroke: #fff;
+    fill: #ccc;
+    stroke: #fff;
 }
 
 path.arc {
- pointer-events: none;
- fill: none;
- stroke: #000;
- display: none;
+    pointer-events: none;
+    fill: none;
+    stroke: #000;
+    display: none;
 }
 
 path.cell {
- fill: none;
- pointer-events: all;
+    fill: none;
+    pointer-events: all;
 }
+
 
 /*circle {
  fill: steelblue;
@@ -124,97 +134,95 @@ path.cell {
 }*/
 
 .arcs path {
-  opacity: 0.7;
-  stroke: #FF6700;
-  pointer-events: all;
-  fill: none;
-  display: none;
-  cursor: pointer;
+    opacity: 0.7;
+    stroke: #FF6700;
+    pointer-events: all;
+    fill: none;
+    display: none;
+    cursor: pointer;
 }
 
 .arc-legend .swatch {
-  opacity: 0.7;
-  stroke: #FF6700;
-  pointer-events: none;
+    opacity: 0.7;
+    stroke: #FF6700;
+    pointer-events: none;
 }
 
 .arcs path:hover {
-  stroke: #004E98
+    stroke: #004E98
 }
 
-.arcs .great-arc-end{
-  fill: #FF6700;
+.arcs .great-arc-end {
+    fill: #FF6700;
 }
 
 .airports {
-  cursor: pointer;
+    cursor: pointer;
 }
 
-.airports, .airport-legend .swatch {
-  fill: #3A6EA5;
-  opacity: 0.8;
-  stroke: white;
-  stroke-width: 1px;
+.airports,
+.airport-legend .swatch {
+    fill: #3A6EA5;
+    opacity: 0.8;
+    stroke: white;
+    stroke-width: 1px;
 }
 
 .airport:hover {
-  fill: #004E98;
+    fill: #004E98;
 }
 
 .airport.selected {
-  fill: #004E98;
-  opacity: 1;
+    fill: #004E98;
+    opacity: 1;
 }
 
 div.airport-tooltip {
-  position: absolute;
-  text-align: left;
-  padding: 5px;
-  background: white;
-  border: 0px;
-  border-radius: 3px;
-  pointer-events: none;
+    position: absolute;
+    text-align: left;
+    padding: 5px;
+    background: white;
+    border: 0px;
+    border-radius: 3px;
+    pointer-events: none;
 }
 
 div.arc-tooltip {
-  position: absolute;
-  text-align: left;
-  padding: 5px;
-  background: white;
-  border: 0px;
-  border-radius: 3px;
-  pointer-events: none;
+    position: absolute;
+    text-align: left;
+    padding: 5px;
+    background: white;
+    border: 0px;
+    border-radius: 3px;
+    pointer-events: none;
 }
 
-.airport-name, .arc-name {
-  font-size: 14px;
-  font-weight: 700;
-  margin: 0;
+.airport-name,
+.arc-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
 }
 
 .controls-container {
-  border: 1px solid #ccc;
-  padding-top: 15px;
-  height: 500px;
+    border: 1px solid #ccc;
+    padding-top: 15px;
+    height: 500px;
 }
 
 .slider-control {
-  margin: 0 15px;
+    margin: 0 15px;
 }
 
 .controls-title {
-  margin-top: 0;
+    margin-top: 0;
 }
-
-
-
-
-
 
 
 /* ==========================================================================
    Helper classes
    ========================================================================== */
+
 
 /*
  * Hide visually and from screen readers
@@ -223,6 +231,7 @@ div.arc-tooltip {
 .hidden {
     display: none !important;
 }
+
 
 /*
  * Hide only visually, but have it available for screen readers:
@@ -240,6 +249,7 @@ div.arc-tooltip {
     width: 1px;
 }
 
+
 /*
  * Extends the .visuallyhidden class to allow the element
  * to be focusable when navigated to via the keyboard:
@@ -256,6 +266,7 @@ div.arc-tooltip {
     width: auto;
 }
 
+
 /*
  * Hide visually and from screen readers, but maintain layout
  */
@@ -263,6 +274,7 @@ div.arc-tooltip {
 .invisible {
     visibility: hidden;
 }
+
 
 /*
  * Clearfix: contain floats
@@ -278,13 +290,16 @@ div.arc-tooltip {
 
 .clearfix:before,
 .clearfix:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+    content: " ";
+    /* 1 */
+    display: table;
+    /* 2 */
 }
 
 .clearfix:after {
     clear: both;
 }
+
 
 /* ==========================================================================
    EXAMPLE Media Queries for Responsive Design.
@@ -297,11 +312,12 @@ div.arc-tooltip {
 }
 
 @media print,
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 1.25dppx),
-       (min-resolution: 120dpi) {
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 1.25dppx),
+(min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
 }
+
 
 /* ==========================================================================
    Print styles.
@@ -316,66 +332,55 @@ div.arc-tooltip {
     *:first-letter,
     *:first-line {
         background: transparent !important;
-        color: #000 !important; /* Black prints faster:
+        color: #000 !important;
+        /* Black prints faster:
                                    http://www.sanbeiji.com/archives/953 */
         box-shadow: none !important;
         text-shadow: none !important;
     }
-
     a,
     a:visited {
         text-decoration: underline;
     }
-
     a[href]:after {
         content: " (" attr(href) ")";
     }
-
     abbr[title]:after {
         content: " (" attr(title) ")";
     }
-
     /*
      * Don't show links that are fragment identifiers,
      * or use the `javascript:` pseudo protocol
      */
-
     a[href^="#"]:after,
     a[href^="javascript:"]:after {
         content: "";
     }
-
     pre,
     blockquote {
         border: 1px solid #999;
         page-break-inside: avoid;
     }
-
     /*
      * Printing Tables:
      * http://css-discuss.incutio.com/wiki/Printing_Tables
      */
-
     thead {
         display: table-header-group;
     }
-
     tr,
     img {
         page-break-inside: avoid;
     }
-
     img {
         max-width: 100% !important;
     }
-
     p,
     h2,
     h3 {
         orphans: 3;
         widows: 3;
     }
-
     h2,
     h3 {
         page-break-after: avoid;
@@ -386,39 +391,47 @@ div.arc-tooltip {
 /************************************
 Month View Styles
 ************************************/
+
 .monthView {
-    Stroke: black;
-    Stroke-width: 3px;
     cursor: pointer;
 }
 
 .d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
 }
+
 
 /* Creates a small triangle extender for the tooltip */
+
 .d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
 }
 
+.noUi-handle:after,
+.noUi-handle:before {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
+.noUi-connect {
+    background-color: #1d91c0 !important;
+    box-shadow: none !important;
+}
 
-
-
-
-
-
-
+.noUi-handle {
+    border: 2px solid #818181 !important;
+    box-shadow: inset 0 0 16px #FFF, inset 0 14px 14px #EBEBEB, 0 3px 6px -3px #BBB !important;
+}
