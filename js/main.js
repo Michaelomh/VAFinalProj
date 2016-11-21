@@ -4,6 +4,10 @@ var monthArr = [1,12];
 var outgoingPassengersRange = [0, 1e9];
 var incomingPassengersRange = [0, 1e9];
 
+var stateSelectorValue = [];
+
+var passengersView = true;
+
 var flightsByDate,
     flightsByOriginAiports,
     passengersByOriginAirports,
@@ -49,6 +53,32 @@ function airportsToLngLat(arr, hash) {
   // console.log(arcsData);
 }
 
+function updateStateFilter(value) {
+	stateSelectorValue = value;
+	$( ".airport" ).hide();
+	if (stateSelectorValue.length > 0) {
+		stateSelectorValue.forEach(function(state) {
+			if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
+				$( ".airport[dataState="+ state +"].in-airport" ).show();
+			} else {
+				$( ".airport[dataState="+ state +"].out-airport" ).show();
+			}
+		});
+	} else {
+		checkToggleSwitch();
+	}
+};
+
+function checkToggleSwitch() {
+	if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
+		$('.out-airport, .out-airport-legend').hide();
+		$('.in-airport, .in-airport-legend').show();
+	} else {
+		$('.in-airport, .in-airport-legend').hide();
+		$('.out-airport, .out-airport-legend').show();
+	}
+}
+
 var gfx = {
 	viz: {
 		draw: function(layer){
@@ -63,6 +93,7 @@ var gfx = {
 			d3.selectAll(".arcs, .airports, .airport-legend, .arc-legend").remove();
 			gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
+			updateStateFilter(stateSelectorValue);
 			// gfx.controls.update(outgoingPassengersRange[0],outgoingPassengersRange[1],document.getElementById('outPassengerSlider'));
 		}
 	},
@@ -326,7 +357,7 @@ var gfx = {
 			.enter()
 				.append("path")
 				.attr("class", "airport out-airport")
-				.attr("data-state", function(d){ return d.properties.stateCode; })
+				.attr("dataState", function(d){ return d.properties.stateCode; })
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
           return (typeof d.properties.outgoingPassengers != 'undefined' && +d.properties.outgoingPassengers > gfx.airports.minOutPassengers && +d.properties.outgoingPassengers < gfx.airports.maxOutPassengers) ? outRadius(d.properties.outgoingPassengers) : 0;
 				}))
@@ -361,6 +392,7 @@ var gfx = {
 			.enter()
 				.append("path")
 				.attr("class", "airport in-airport")
+				.attr("dataState", function(d){ return d.properties.stateCode; })
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
           return (typeof d.properties.incomingPassengers != 'undefined' && +d.properties.incomingPassengers > gfx.airports.minInPassengers && +d.properties.incomingPassengers < gfx.airports.maxInPassengers) ? inRadius(d.properties.incomingPassengers) : 0;
 				}))
@@ -421,14 +453,7 @@ var gfx = {
       gfx.baseMap[layer].svg.select(".in-airport-legend")
         .call(inAirportLegend);
 
-    	if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
-	  			$('.out-airport, .out-airport-legend').hide();
-      		$('.in-airport, .in-airport-legend').show();
-      	} else {
-      		$('.in-airport, .in-airport-legend').hide();
-    			$('.out-airport, .out-airport-legend').show();
-    	};
-
+    	checkToggleSwitch();
 		}
 	},
 	airportTooltip: {
@@ -504,16 +529,22 @@ var gfx = {
       	gfx.viz.redraw("main");
       });
 
+      // init states dropdown
+	    var stateSelector = $('#stateSelector').selectize({
+	    	onChange: function(value){
+	    		updateStateFilter(value);
+	    	}
+	    });
+
       // add event listener to checkbox
       $('.toggle-switch input[type=checkbox]').change(function(){
-      	if ($('.toggle-switch input[type=checkbox]').prop('checked')) {
-      		$('.out-airport, .out-airport-legend').hide();
-      		$('.in-airport, .in-airport-legend').show();
-      	} else {
-      		$('.in-airport, .in-airport-legend').hide();
-    			$('.out-airport, .out-airport-legend').show();
-      	}
+      	checkToggleSwitch();
+      	updateStateFilter(stateSelectorValue);
 	    });
+
+	    // stateSelector.on('change', function(event) {
+	    // 	console.log(event.value);
+	    // });
     },
     update: function(min, max, slider) {
     	slider.noUiSlider.updateOptions({

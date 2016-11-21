@@ -227,7 +227,14 @@ div.arc-tooltip {
   height: 500px;
 }
 
+.controls-container h4 {
+  font-weight: 700;
+  margin-top: 0;
+}
+
 .controls-container h5 {
+  font-weight: 700;
+  margin-bottom: 5px;
   margin-top: 15px;
 }
 
@@ -243,8 +250,9 @@ div.arc-tooltip {
   font-size: 12px;
 }
 
-.controls-title {
-  margin-top: 0;
+.selectize-input {
+  max-height: 65px;
+  overflow-y: scroll;
 }
 
 /* The switch - the box around the slider */
@@ -254,6 +262,7 @@ div.arc-tooltip {
   width: 60px;
   height: 24px;
   margin-left: 55px;
+  margin-top: 10px;
 }
 
 .toggle-switch:before {
@@ -319,6 +328,14 @@ input:checked + .toggle-slider:before {
 }
 
 .controls-container .noUi-connect {
+  background: #3A6EA5;
+}
+
+.selectize-control.multi .selectize-input [data-value] {
+  background-image:none;
+  color: white;
+  text-shadow: none;
+  box-shadow: none;
   background: #3A6EA5;
 }
 
