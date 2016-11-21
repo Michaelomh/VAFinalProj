@@ -83,7 +83,7 @@ var gfx = {
 	viz: {
 		draw: function(layer){
 			gfx.baseMap.bake(layer);
-            gfx.arcs.bake(layer);
+      gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
 			gfx.airportTooltip.bake(layer);
 			gfx.arcTooltip.bake(layer);
@@ -472,14 +472,14 @@ var gfx = {
 	},
 	controls: {
 		bake: function() {
-		  var outPassengerSlider = document.getElementById('outPassengerSlider');
+		  this.outPassengerSlider = document.getElementById('outPassengerSlider');
       var outPassengerStart = document.getElementById('outPassengersStart');
       var outPassengerEnd = document.getElementById('outPassengersEnd');
-      var inPassengerSlider = document.getElementById('inPassengerSlider');
+      this.inPassengerSlider = document.getElementById('inPassengerSlider');
       var inPassengerStart = document.getElementById('inPassengersStart');
       var inPassengerEnd = document.getElementById('inPassengersEnd');
 
-      noUiSlider.create(outPassengerSlider, {
+      noUiSlider.create(this.outPassengerSlider, {
       	start: [0, 5000000],
       	connect: true,
       	range: {
@@ -490,7 +490,7 @@ var gfx = {
       	// tooltips: [wNumb({ decimals: 0, thousand: ',' }), wNumb({ decimals: 0, thousand: ',' })]
       });
 
-      outPassengerSlider.noUiSlider.on('update', function(values, handle) {
+      this.outPassengerSlider.noUiSlider.on('update', function(values, handle) {
       	if ( handle == 0 ) {
       		values[handle] == 0 ? outPassengerStart.innerHTML = 0 : outPassengerStart.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
       	}
@@ -499,12 +499,12 @@ var gfx = {
       	}
       });
 
-      outPassengerSlider.noUiSlider.on('change', function(values, handle) {
+      this.outPassengerSlider.noUiSlider.on('set', function(values, handle) {
       	outgoingPassengersRange = values;
       	gfx.viz.redraw("main");
       });
 
-      noUiSlider.create(inPassengerSlider, {
+      noUiSlider.create(this.inPassengerSlider, {
       	start: [0, 5000000],
       	connect: true,
       	range: {
@@ -515,7 +515,7 @@ var gfx = {
       	// tooltips: [wNumb({ decimals: 0, thousand: ',' }), wNumb({ decimals: 0, thousand: ',' })]
       });
 
-      inPassengerSlider.noUiSlider.on('update', function(values, handle) {
+      this.inPassengerSlider.noUiSlider.on('update', function(values, handle) {
       	if ( handle == 0 ) {
       		values[handle] == 0 ? inPassengerStart.innerHTML = 0 : inPassengerStart.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
       	}
@@ -524,13 +524,13 @@ var gfx = {
       	}
       });
 
-      inPassengerSlider.noUiSlider.on('change', function(values, handle) {
+      this.inPassengerSlider.noUiSlider.on('set', function(values, handle) {
       	incomingPassengersRange = values;
       	gfx.viz.redraw("main");
       });
 
       // init states dropdown
-	    var stateSelector = $('#stateSelector').selectize({
+	    this.stateSelector = $('#stateSelector').selectize({
 	    	onChange: function(value){
 	    		updateStateFilter(value);
 	    	}
@@ -541,6 +541,11 @@ var gfx = {
       	checkToggleSwitch();
       	updateStateFilter(stateSelectorValue);
 	    });
+
+	    $('.reset-button').on('click', function() {
+	    	// console.log(gfx.baseMap[layer].controls);
+	    	gfx.controls.reset();
+	    })
 
 	    // stateSelector.on('change', function(event) {
 	    // 	console.log(event.value);
@@ -553,6 +558,22 @@ var gfx = {
     			'max': max
     		}
     	})
+    },
+    set: {
+    	slider: function(min,max,slider) {
+    		slider.noUiSlider.set([min,max]);
+    	}
+    },
+    reset: function() {
+    	// reset all sliders
+    	this.set.slider(0,5000000,this.outPassengerSlider);
+    	this.set.slider(0,5000000,this.inPassengerSlider);
+    	// clear selection
+    	this.stateSelector[0].selectize.clear();
+    	stateSelectorValue = [];
+    	updateStateFilter(stateSelectorValue);
+    	// move passengers view to outgoing
+    	// redraw everything
     }
 	}
 }
