@@ -284,7 +284,6 @@ var gfx = {
         var passengers = passengersByDestAirportsData[i].value;
         incomingPassengersHash[airportID] = passengers;
       }
-      console.log(airportData);
 			// add outgoingPassengers and incomingPassengers to airportData
 			airportData.features.forEach(function(airport) {
 				// console.log(airport);
@@ -327,6 +326,7 @@ var gfx = {
 			.enter()
 				.append("path")
 				.attr("class", "airport out-airport")
+				.attr("data-state", function(d){ return d.properties.stateCode; })
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
           return (typeof d.properties.outgoingPassengers != 'undefined' && +d.properties.outgoingPassengers > gfx.airports.minOutPassengers && +d.properties.outgoingPassengers < gfx.airports.maxOutPassengers) ? outRadius(d.properties.outgoingPassengers) : 0;
 				}))
