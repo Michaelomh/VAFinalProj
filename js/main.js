@@ -284,7 +284,7 @@ var gfx = {
         var passengers = passengersByDestAirportsData[i].value;
         incomingPassengersHash[airportID] = passengers;
       }
-
+      console.log(airportData);
 			// add outgoingPassengers and incomingPassengers to airportData
 			airportData.features.forEach(function(airport) {
 				// console.log(airport);
@@ -552,10 +552,9 @@ var data = {
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
-                flightsByOriginState = data.flights.dimension(function(d) {return d['ORIGIN_STATE_ABR']});
-                flightsByDestState = data.flights.dimension(function(d) {return d['DEST_STATE_ABR']});
+        flightsByOriginState = data.flights.dimension(function(d) {return d['ORIGIN_STATE_ABR']});
+        flightsByDestState = data.flights.dimension(function(d) {return d['DEST_STATE_ABR']});
 				flightsByPassengers = data.flights.dimension(function(d) {return d['PASSENGERS']});
-                
 				callback();
 			});
 		},
