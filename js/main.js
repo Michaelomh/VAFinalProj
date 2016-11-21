@@ -60,13 +60,13 @@ var gfx = {
 		setValues: function(){
 			// These values are shared among all instances of our basemap
 			// Map dimensions (in pixels)
-			this.width = 1024;
-			this.height = 600;
+			this.width = 698;
+			this.height = 500;
 
 			// Map projection
 			this.projection = d3.geoAlbersUsa()
-					.scale(this.width*1)
-					.translate([this.width/2+100, this.height/2]); //translate to center the map in view
+					.scale(this.width*1.25)
+					.translate([this.width/2, this.height/2+30]); //translate to center the map in view
 
 			// Generate paths based on projection
 			this.path = d3.geoPath()
