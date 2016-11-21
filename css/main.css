@@ -239,6 +239,10 @@ div.arc-tooltip {
   margin: 0 15px;
 }
 
+.slider-label {
+  font-size: 12px;
+}
+
 .controls-title {
   margin-top: 0;
 }
