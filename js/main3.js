@@ -147,29 +147,29 @@
       heatmapChart('data/testdata.csv');
 
 
-      console.log(data.flights);
+      // console.log(data.flights);
 
-      var OriDestABRGroup
+      // var OriDestABRGroup
 
-      $(document).ready(function () {
-          setInterval(function () {
-              var OriDestABRDimension = data.flights.dimension(function (d) {
-                  //stringify() and later, parse() to get keyed objects
-                  return JSON.stringify({
-                      originABR: d["ORIGIN_STATE_ABR"],
-                      destABR: d["DEST_STATE_ABR"]
-                  });
-              });
+      // $(document).ready(function () {
+      //     setInterval(function () {
+      //         var OriDestABRDimension = data.flights.dimension(function (d) {
+      //             //stringify() and later, parse() to get keyed objects
+      //             return JSON.stringify({
+      //                 originABR: d["ORIGIN_STATE_ABR"],
+      //                 destABR: d["DEST_STATE_ABR"]
+      //             });
+      //         });
 
-              OriDestABRGroup = OriDestABRDimension.group().reduceSum(function (d) {
-                  return d['PASSENGERS'];
-              });
-              OriDestABRGroup.all().forEach(function (d) {
-                  d.key = JSON.parse(d.key);
+      //         OriDestABRGroup = OriDestABRDimension.group().reduceSum(function (d) {
+      //             return d['PASSENGERS'];
+      //         });
+      //         OriDestABRGroup.all().forEach(function (d) {
+      //             d.key = JSON.parse(d.key);
 
-              });
+      //         });
 
-              console.log(OriDestABRGroup.all());
+      //         console.log(OriDestABRGroup.all());
 
-          }, 5000);
-      });
+      //     }, 5000);
+      // });

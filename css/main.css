@@ -227,6 +227,14 @@ div.arc-tooltip {
   height: 500px;
 }
 
+.controls-container h5 {
+  margin-top: 15px;
+}
+
+.controls-container .slider-control {
+  margin-bottom: 25px;
+}
+
 .slider-control {
   margin: 0 15px;
 }
