@@ -1,13 +1,15 @@
 // sample month (please insert later) = [startMonth, endMonth] CROSS FILTER INPUT **********
 var monthArr = [1,12];
 
-var outgoingPassengersArr = [];
+var outgoingPassengersRange = [0, 1e9];
+var incomingPassengersRange = [0, 1e9];
 
 var flightsByDate,
 		flightsByOriginAiports,
 		passengersByOriginAirports,
 		flightsByDestAirports,
 		passengersByDestAirports,
+		flightsByPassengers,
     OriDestAirportsGroup;
 
 var numberFormat = d3.formatPrefix('.2', 1e6);
@@ -23,7 +25,7 @@ var radius = d3.scaleSqrt()
     .range([0, 12]);
 
 var arcScale = d3.scaleLinear()
-               .range([0, 3]);
+               .range([0, 5]);
 
 // input array of originID, destID, value and hash of airports
 function airportsToLngLat(arr, hash) {
@@ -57,7 +59,7 @@ var gfx = {
 			d3.selectAll(".arcs, .airports, .airport-legend, .arc-legend").remove();
 			gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
-			gfx.controls.update(0,gfx.airports.maxOutPassengers,document.getElementById('outPassengerSlider'));
+			// gfx.controls.update(outgoingPassengersRange[0],outgoingPassengersRange[1],document.getElementById('outPassengerSlider'));
 		}
 	},
 	baseMap: {
@@ -295,17 +297,26 @@ var gfx = {
 			});
 
 			// set domain for radius
+			this.minOutPassengers = 0;
 			this.maxOutPassengers = d3.max(airportData.features, function(d) {return d.properties.outgoingPassengers});
-			radius.domain([0, this.maxOutPassengers]);
-			console.log(this.maxOutPassengers);
+			this.minInPassengers = 0;
+			this.minInPassengers = d3.max(airportData.features, function(d) {return d.properties.incomingPassengers});
+			if (outgoingPassengersRange[0] > this.minOutPassengers) {
+				this.minOutPassengers = outgoingPassengersRange[0];
+			}
+			if (outgoingPassengersRange[1] < +this.maxOutPassengers) {
+				this.maxOutPassengers = outgoingPassengersRange[1];
+			}
+
+			radius.domain([this.minOutPassengers, this.maxOutPassengers]);
       //add symbols for outgoing passsengers
 			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
-				.data(airportData.features)	
+				.data(airportData.features)
 			.enter()
 				.append("path")
 				.attr("class", "airport")
 				.attr("d", gfx.baseMap.path.pointRadius(function(d) {
-          return (typeof d.properties.outgoingPassengers != 'undefined') ? radius(d.properties.outgoingPassengers) : 0;
+          return (typeof d.properties.outgoingPassengers != 'undefined' && +d.properties.outgoingPassengers > gfx.airports.minOutPassengers && +d.properties.outgoingPassengers < gfx.airports.maxOutPassengers) ? radius(d.properties.outgoingPassengers) : 0;
 				}))
 				.on("click", function(d) {
 					// toggle visiblity of lines
@@ -370,11 +381,11 @@ var gfx = {
       var outPassengerEnd = document.getElementById('outPassengersEnd');
 
       noUiSlider.create(outPassengerSlider, {
-      	start: [0, gfx.airports.maxOutPassengers],
+      	start: [0, 5000000],
       	connect: true,
       	range: {
       		'min': 0,
-      		'max': gfx.airports.maxOutPassengers
+      		'max': 5000000
       	},
       	step: 1000
       	// tooltips: [wNumb({ decimals: 0, thousand: ',' }), wNumb({ decimals: 0, thousand: ',' })]
@@ -382,12 +393,17 @@ var gfx = {
 
       outPassengerSlider.noUiSlider.on('update', function(values, handle) {
       	if ( handle == 0 ) {
-      		values[handle] == 0.00 ? outPassengerStart.innerHTML = 0 : outPassengerStart.innerHTML = arcNumberFormat(values[handle]);
+      		values[handle] == 0 ? outPassengerStart.innerHTML = 0 : outPassengerStart.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
       	}
       	if ( handle == 1 ) {
-      		outPassengerEnd.innerHTML = arcNumberFormat(values[handle]);
+      		values[handle] == 0 ? outPassengerEnd.innerHTML = 0 : outPassengerEnd.innerHTML = d3.formatPrefix(',.0', 1e3)(values[handle]);
       	}
       });
+
+      outPassengerSlider.noUiSlider.on('change', function(values, handle) {
+      	outgoingPassengersRange = values;
+      	gfx.viz.redraw("main");
+      })
     },
     update: function(min, max, slider) {
     	slider.noUiSlider.updateOptions({
@@ -426,6 +442,7 @@ var data = {
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
+				flightsByPassengers = data.flights.dimension(function(d) {return d['PASSENGERS']});
 
 				callback();
 			});
