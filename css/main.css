@@ -192,7 +192,19 @@ div.arc-tooltip {
   margin: 0;
 }
 
+.controls-container {
+  border: 1px solid #ccc;
+  padding-top: 15px;
+  height: 500px;
+}
 
+.slider-control {
+  margin: 0 15px;
+}
+
+.controls-title {
+  margin-top: 0;
+}
 
 
 

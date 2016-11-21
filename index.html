@@ -15,8 +15,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="js/nouislider.css" />
-
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.js"></script>
     <script type="text/javascript" src="js/crossfilter.js"></script>
     <!-- <script src="js/dc.js"></script> -->
@@ -48,10 +47,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-3">
-                <div id="controlsContainer">
-                    <p>Filter Airports</p>
-                </div>
+            <div class="col-xs-3 controls-container">
+                <h4 class="controls-title">Filter Airports</h4>
+                <h5>Outgoing Passengers</h5>
+                <p><span id="outPassengersStart"></span> to <span id="outPassengersEnd"></span></p>
+                <div class="slider-control" id="outPassengerSlider"></div>
             </div>
             <div class="col-xs-9">
                 <!-- map of usa -->
@@ -72,10 +72,10 @@
     </script>
     <script src="js/vendor/crossfilter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.16.0/d3-legend.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.1.4/js/ion.rangeSlider.min.js"></script>
     <script src="data/states-hash.json"></script>
     <script src="js/plugins.js"></script>
-    <script src="js/nouislider.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+    <script src="js/wNumb.js"></script>
     <script src="js/main.js"></script>
     <script src="js/main2.js"></script>
     <script src="js/main3.js"></script>

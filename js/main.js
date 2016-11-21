@@ -1,6 +1,8 @@
 // sample month (please insert later) = [startMonth, endMonth] CROSS FILTER INPUT **********
 var monthArr = [1,12];
 
+var outgoingPassengersArr = [];
+
 var flightsByDate,
 		flightsByOriginAiports,
 		passengersByOriginAirports,
@@ -49,11 +51,13 @@ var gfx = {
 			gfx.airports.bake(layer);
 			gfx.airportTooltip.bake(layer);
 			gfx.arcTooltip.bake(layer);
+			gfx.controls.bake(layer);
 		},
 		redraw: function(layer) {
 			d3.selectAll(".arcs, .airports, .airport-legend, .arc-legend").remove();
 			gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
+			gfx.controls.update(0,gfx.airports.maxOutPassengers,document.getElementById('outPassengerSlider'));
 		}
 	},
 	baseMap: {
@@ -291,10 +295,12 @@ var gfx = {
 			});
 
 			// set domain for radius
-			radius.domain([0, d3.max(airportData.features, function(d) {return d.properties.outgoingPassengers})]);
+			this.maxOutPassengers = d3.max(airportData.features, function(d) {return d.properties.outgoingPassengers});
+			radius.domain([0, this.maxOutPassengers]);
+			console.log(this.maxOutPassengers);
       //add symbols for outgoing passsengers
 			var airports = gfx.baseMap[layer].airports.selectAll(".airports")
-				.data(airportData.features)
+				.data(airportData.features)	
 			.enter()
 				.append("path")
 				.attr("class", "airport")
@@ -356,6 +362,41 @@ var gfx = {
 				.attr("class", "arc-tooltip")
 				.style("opacity", 0);
 		}
+	},
+	controls: {
+		bake: function() {
+		  var outPassengerSlider = document.getElementById('outPassengerSlider');
+      var outPassengerStart = document.getElementById('outPassengersStart');
+      var outPassengerEnd = document.getElementById('outPassengersEnd');
+
+      noUiSlider.create(outPassengerSlider, {
+      	start: [0, gfx.airports.maxOutPassengers],
+      	connect: true,
+      	range: {
+      		'min': 0,
+      		'max': gfx.airports.maxOutPassengers
+      	},
+      	step: 1000
+      	// tooltips: [wNumb({ decimals: 0, thousand: ',' }), wNumb({ decimals: 0, thousand: ',' })]
+      });
+
+      outPassengerSlider.noUiSlider.on('update', function(values, handle) {
+      	if ( handle == 0 ) {
+      		values[handle] == 0.00 ? outPassengerStart.innerHTML = 0 : outPassengerStart.innerHTML = arcNumberFormat(values[handle]);
+      	}
+      	if ( handle == 1 ) {
+      		outPassengerEnd.innerHTML = arcNumberFormat(values[handle]);
+      	}
+      });
+    },
+    update: function(min, max, slider) {
+    	slider.noUiSlider.updateOptions({
+    		range: {
+    			'min': min,
+    			'max': max
+    		}
+    	})
+    }
 	}
 }
 
