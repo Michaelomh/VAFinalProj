@@ -339,10 +339,11 @@ var gfx = {
 				}).on("mouseover", function(d) {
 					gfx.baseMap[layer].airportTooltip.transition()
 						.duration(200)
-						.style("opacity", .8);
+						.style("opacity", .9);
 					gfx.baseMap[layer].airportTooltip.html(
 							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
-							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "<br/>" +
+							'<p class="airport-city-name">' + d.properties.displayAirportCityName + '</p>' +
+							'<b>Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "</b><br/>" +
 							'Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers))
             .style("left", (d3.event.pageX + 15) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
@@ -372,11 +373,12 @@ var gfx = {
 				}).on("mouseover", function(d) {
 					gfx.baseMap[layer].airportTooltip.transition()
 						.duration(200)
-						.style("opacity", .8);
+						.style("opacity", .9);
 					gfx.baseMap[layer].airportTooltip.html(
-							'<p class="airport-name">' + d.properties.displayAirportName + "</p>" +
-							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + "<br/>" +
-							'Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers))
+							'<p class="airport-name">' + d.properties.displayAirportName + '</p>' +
+							'<p class="airport-city-name">' + d.properties.displayAirportCityName + '</p>' +
+							'Outgoing Passengers: ' + numberFormat(d.properties.outgoingPassengers) + '<br/>' +
+							'<b>Incoming Passengers: ' + numberFormat(d.properties.incomingPassengers) + '</b>')
             .style("left", (d3.event.pageX + 15) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
 				}).on("mouseout", function(d) {

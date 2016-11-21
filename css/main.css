@@ -117,12 +117,6 @@ path.cell {
  pointer-events: all;
 }
 
-/*circle {
- fill: steelblue;
- fill-opacity: .8;
- stroke: #fff;
-}*/
-
 .arcs path {
   opacity: 0.7;
   stroke: #FF6700;
@@ -216,9 +210,15 @@ div.arc-tooltip {
 }
 
 .airport-name, .arc-name {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   margin: 0;
+}
+
+.airport-city-name {
+  font-size: 12px;
+  color: #272727;
+  margin-bottom: 5px;
 }
 
 .controls-container {
@@ -287,8 +287,8 @@ div.arc-tooltip {
   right: 0;
   bottom: 0;
   background-color: #3A6EA5;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: .3s;
+  transition: .3s;
 }
 
 .toggle-slider:before {
@@ -300,8 +300,8 @@ div.arc-tooltip {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: .3s;
+  transition: .3s;
 }
 
 input:checked + .toggle-slider {
