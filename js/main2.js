@@ -289,6 +289,7 @@ function convertMonth(x) {
 var skipSlider = document.getElementById('skipstep');
 
 noUiSlider.create(skipSlider, {
+    connect: true,
     range: {
         'min': 0,
         '9.1%': 1,

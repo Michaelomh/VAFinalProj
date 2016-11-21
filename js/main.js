@@ -51,10 +51,7 @@ var gfx = {
 			gfx.arcTooltip.bake(layer);
 		},
 		redraw: function(layer) {
-			d3.select(".arcs").remove();
-			d3.select(".airports").remove();
-			d3.select(".airport-legend").remove();
-			d3.select(".arc-legend").remove();
+			d3.selectAll(".arcs, .airports, .airport-legend, .arc-legend").remove();
 			gfx.arcs.bake(layer);
 			gfx.airports.bake(layer);
 		}
