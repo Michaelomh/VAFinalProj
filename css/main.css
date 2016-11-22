@@ -98,6 +98,12 @@ textarea {
 body {
   font-family: "Helvetica-Neue", Helvetica, Arial, sans-serif;
 }
+
+.container {
+  width: 970px;
+  padding-left: 30px;
+}
+
 svg {
   margin: 0 auto;
   display: inherit;
@@ -136,7 +142,7 @@ path.cell {
 }
 
 .arcs path:hover {
-  stroke: #004E98
+  stroke: #225ea8;
 }
 
 .arcs .great-arc-end{
@@ -148,13 +154,13 @@ path.cell {
 }
 
 .airports, .airport-legend .swatch {
-  opacity: 0.8;
+  opacity: 1;
   stroke: white;
   stroke-width: 1px;
 }
 
 .out-airport {
-  fill: #3A6EA5;
+  fill: #225ea8;
 }
 
 .out-airport:hover {
@@ -162,7 +168,7 @@ path.cell {
 }
 
 .out-airport-legend .swatch {
-  fill: #3A6EA5;
+  fill: #225ea8;
 }
 
 .out-airport.selected {
@@ -226,8 +232,10 @@ div.arc-tooltip {
 
 .controls-container {
   border: 1px solid #ccc;
+  border-radius: 4px;
   padding-top: 15px;
   height: 500px;
+  background: white;
 }
 
 .controls-container h4 {
@@ -298,7 +306,7 @@ div.arc-tooltip {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #3A6EA5;
+  background-color: #225ea8;
   -webkit-transition: .3s;
   transition: .3s;
 }
@@ -330,8 +338,13 @@ input:checked + .toggle-slider:before {
   transform: translateX(36px);
 }
 
-.controls-container .noUi-connect {
-  background: #3A6EA5;
+.map-container-outer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.noUi-horizontal .noUi-handle {
+  cursor: pointer;
 }
 
 .selectize-control.multi .selectize-input [data-value] {
@@ -339,14 +352,41 @@ input:checked + .toggle-slider:before {
   color: white;
   text-shadow: none;
   box-shadow: none;
-  background: #3A6EA5;
+  background: #1d91c0;
 }
 
 .reset-button {
+  background: #225ea8;
   position: absolute;
   bottom: 10px;
   left: 15px;
   width: 90%;
+}
+
+.noUi-handle:after,
+.noUi-handle:before {
+    background: transparent;
+    box-shadow: none;
+}
+
+.noUi-connect {
+  background-color: #225ea8;
+  box-shadow: none;
+}
+
+.noUi-handle {
+  border: 1px solid #ccc;
+  box-shadow: none;
+  background: #f8f8f8;
+}
+
+.month-container {
+  margin-top: 30px;
+}
+
+#skipstep {
+  margin-left: 39px;
+  margin-right: 51px;
 }
 
 
@@ -550,20 +590,4 @@ Month View Styles
     content: "\25BC";
     position: absolute;
     text-align: center;
-}
-
-.noUi-handle:after,
-.noUi-handle:before {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-
-.noUi-connect {
-    background-color: #1d91c0 !important;
-    box-shadow: none !important;
-}
-
-.noUi-handle {
-    border: 2px solid #818181 !important;
-    box-shadow: inset 0 0 16px #FFF, inset 0 14px 14px #EBEBEB, 0 3px 6px -3px #BBB !important;
 }
