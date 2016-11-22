@@ -29,6 +29,12 @@
     .noUi-background {
         background-color: black;
     }
+    
+    .mono {
+        font-size: 150px;
+        font-family: Consolas, courier;
+        fill: #aaa;
+    }
 </style>
 
 <body>
@@ -42,7 +48,7 @@
 
                 </div>
                 <div style="width: 980px;margin: 0px auto;">
-                    Selected Month: <span id="selectedMonth">Nil</span>
+                    Selected Month: <span id="selectedMonth">All</span>
                     <span>&nbsp;&nbsp;&nbsp;</span>
                     <a id="resetMonth" style="cursor:pointer;">reset</a>
                 </div>
@@ -53,8 +59,8 @@
                 <h4 class="controls-title">Filter Airports</h4>
                 <h5>Passengers View</h5>
                 <label class="toggle-switch">
-                  <input type="checkbox">
-                  <div class="toggle-slider"></div>
+                    <input type="checkbox">
+                    <div class="toggle-slider"></div>
                 </label>
                 <h5>Outgoing Passengers</h5>
                 <p class=slider-label><span id="outPassengersStart"></span> to <span id="outPassengersEnd"></span></p>

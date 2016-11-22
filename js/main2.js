@@ -30,7 +30,7 @@ var dataset; //for top K airports
 
 var colors = ["#7acbdc", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"];
 var buckets = 6;
-var monthPassengers = [16705222, 15327531, 16452608, 16984795, 14403943, 15694134, 13345572, 15025450, 17442945, 18454087, 19370589,16692077];
+var monthPassengers = [16705222, 15327531, 16452608, 16984795, 14403943, 15694134, 13345572, 15025450, 17442945, 18454087, 19370589, 16692077];
 
 var jan = 0;
 var feb = 0;
@@ -197,7 +197,7 @@ var svg = d3.select("#monthView").append("svg")
 
 svg.call(tip);
 
-function render(data) { 
+function render(data) {
     // Bind data
     var rects = svg.selectAll("rect").data(data);
 
@@ -213,9 +213,10 @@ function render(data) {
         .attr("class", "monthView")
         .attr("x", scale)
         .attr("id", MonthViewXscale)
+        /*.attr("class", "activeMonthView")*/
         .style("fill", function (d) {
-        /*console.log(colorScale(monthPassengers[d-1]));*/
-        return colorScale(monthPassengers[d-1]);
+            /*console.log(colorScale(monthPassengers[d-1]));*/
+            return colorScale(monthPassengers[d - 1]);
         });
 
     //Add the SVG Text Element to the svgContainer
@@ -318,22 +319,22 @@ skipSlider.noUiSlider.on('set', function (values, handle) {
     for (var i = start; i < end + 1; i++) {
         monthSelected.push(monthArray[i]);
     }
-    // console.log(monthArr);
-    /*console.log(monthSelected);*/
 
     if (monthSelected.length === 12) {
         $("#selectedMonth").text("All");
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
     } else {
         var toPrint = ""
         for (var i = 0; i < monthSelected.length; i++) {
             toPrint += monthSelected[i];
             toPrint += ", "
+            $("#" + monthSelected[i]).addClass("activeMonthView");
         }
         $("#selectedMonth").text(toPrint.substr(0, toPrint.length - 2));
     }
 
-    monthArr = [start+1,end+1]
-    // redraw map
+    monthArr = [start + 1, end + 1]
+        // redraw map
     gfx.viz.redraw("main");
     // console.log(monthArr);
 });
@@ -344,56 +345,81 @@ $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").clic
     switch (selectedEvent) {
     case "Jan":
         skipSlider.noUiSlider.set([0, 0]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Jan").addClass("activeMonthView");
         $("#selectedMonth").text("Jan");
         break;
     case "Feb":
         skipSlider.noUiSlider.set([1, 1]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Feb").addClass("activeMonthView");
         $("#selectedMonth").text("Feb");
         break;
     case "Mar":
         skipSlider.noUiSlider.set([2, 2]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Mar").addClass("activeMonthView");
         $("#selectedMonth").text("Mar");
         break;
     case "Apr":
         skipSlider.noUiSlider.set([3, 3]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Apr").addClass("activeMonthView");
         $("#selectedMonth").text("Apr");
         break;
     case "May":
         skipSlider.noUiSlider.set([4, 4]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#May").addClass("activeMonthView");
         $("#selectedMonth").text("May");
         break;
     case "Jun":
         skipSlider.noUiSlider.set([5, 5]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Jun").addClass("activeMonthView");
         $("#selectedMonth").text("Jun");
         break;
     case "Jul":
         skipSlider.noUiSlider.set([6, 6]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Jul").addClass("activeMonthView");
         $("#selectedMonth").text("Jul");
         break;
     case "Aug":
         skipSlider.noUiSlider.set([7, 7]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Aug").addClass("activeMonthView");
         $("#selectedMonth").text("Aug");
         break;
     case "Sep":
         skipSlider.noUiSlider.set([8, 8]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Sep").addClass("activeMonthView");
         $("#selectedMonth").text("Sep");
         break;
     case "Oct":
         skipSlider.noUiSlider.set([9, 9]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Oct").addClass("activeMonthView");
         $("#selectedMonth").text("Oct");
         break;
     case "Nov":
         skipSlider.noUiSlider.set([10, 10]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Nov").addClass("activeMonthView");
         $("#selectedMonth").text("Nov");
         break;
     case "Dec":
         skipSlider.noUiSlider.set([11, 11]);
+        $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").removeClass("activeMonthView");
+        $("#Dec").addClass("activeMonthView");
         $("#selectedMonth").text("Dec");
         break;
     }
 });
 
 $("#resetMonth").click(function () {
+    $("#Jan, #Feb, #Mar, #Apr, #May, #Jun, #Jul, #Aug, #Sep, #Oct, #Nov, #Dec").addClass("activeMonthView");
     skipSlider.noUiSlider.set([0, 11]);
     $("#selectedMonth").text("All");
 });
