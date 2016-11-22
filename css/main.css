@@ -379,7 +379,7 @@ input:checked + .toggle-slider:before {
   position: absolute;
   bottom: 10px;
   left: 15px;
-  width: 90%;
+  width: 87.5%;
 }
 
 .noUi-handle:after,
