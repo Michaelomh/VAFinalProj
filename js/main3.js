@@ -12,13 +12,7 @@ var margin = {
     colors = ["#7acbdc", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"],
     statesTo = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Trinidad & Tobago", "Utah", "Vermont", "Virgin Islands", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"],
     statesFrom = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Trinidad & Tobago", "Utah", "Vermont", "Virgin Islands", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"],
-    OriDestABRGroup,
-    clearArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53];
-
-/*
-IN CASE
-["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Trinidad & Tobago" "Utah", "Vermont", "Virginia","Virgin Islands" "Washington", "West Virginia", "Wisconsin", "Wyoming"]*/
+    OriDestABRGroup;
 
 var matrixSvg = d3.select("#matrix").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -30,7 +24,7 @@ var dayLabels = matrixSvg.selectAll(".dayLabel")
     .data(statesTo)
     .enter().append("g")
     .attr("transform", function (d, i) {
-        return "translate(-6," + (gridSize / 2 - 2 ) + ")";
+        return "translate(-6," + (gridSize / 2 - 2) + ")";
     })
     .append("text")
     .attr("x", 0)
@@ -61,116 +55,6 @@ var timeLabels = matrixSvg.selectAll(".timeLabel")
     .text(function (d) {
         return d;
     });
-
-/*var dayLabels = svg.selectAll(".dayLabel")
-.data(statesTo)
-.enter().append("text")
-.text(function (d) {
-return d;
-})
-.attr("x", 0)
-.attr("y", function (d, i) {
-return i * gridSize;
-})
-.style("text-anchor", "end")
-.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-.attr("class", function (d) {
-return ("to" + d);
-})
-.style("font-size", "10px");*/
-
-
-
-/*      var timeLabels = svg.selectAll(".timeLabel")
-.data(statesFrom)
-.enter().append("text")
-.text(function (d) {
-return d;
-})
-.attr("x", function (d, i) {
-return i * gridSize;
-})
-.attr("y", 0)
-.style("text-anchor", "middle")
-.attr("transform", "translate(" + gridSize / 2 + ", -6)")
-.attr("class", function (d) {
-return ("from" + d);
-})
-.style("font-size", "10px");*/
-
-
-/*
-var heatmapChart = function (csvFile) {
-d3.csv(csvFile,
-function (d) {
-return {
-day: d.day,
-hour: d.hour,
-value: +d.value
-};
-},
-function (error, data) {
-console.log(data);
-var colorScale = d3.scaleQuantile()
-.domain([0, buckets - 1, d3.max(data, function (d) {
-return d.value;
-})])
-.range(colors);
-
-
-var cards = svg.selectAll(".hour")
-.data(data, function (d) {
-return d.day + ':' + d.hour;
-});
-
-cards.append("title");
-
-cards.enter().append("rect")
-.attr("x", function (d, i) {
-//console.log((d.hour - 1) * gridSize);
-return (d.hour - 1) * gridSize;
-})
-.attr("y", function (d) {
-//console.log((d.day - 1) * gridSize);
-return (d.day - 1) * gridSize;
-})
-.attr("rx", 3)
-.attr("ry", 3)
-.attr("class", "hour bordered")
-.attr("width", gridSize - 2)
-.attr("height", gridSize - 2)
-.style("fill", function (d) {
-return colorScale(d.value);
-});
-
-cards.exit().remove();
-
-});
-};
-
-heatmapChart('data/testdata.csv');*/
-
-/*function drawNullMap(data) {
-
-    var cards = matrixSvg.selectAll(".hour")
-        .data(data, function (d, i) {
-            return data[d] + ':' + data[i];
-        });
-
-    cards.enter().append("rect")
-        .attr("x", function (d) {
-            console.log("x = " + clearArray[d] * gridSize);
-            return (clearArray[d] - 1) * gridSize;
-        })
-        .attr("y", function (d) {
-            console.log("y = " + clearArray[d] * gridSize);
-            return (clearArray[d] - 1) * gridSize;
-        })
-        .attr("class", "clear")
-        .attr("width", gridSize - 3)
-        .attr("height", gridSize - 3)
-        .style("fill", "#ffffff");
-}*/
 
 var drawNullMap = function (csvFile) {
     d3.csv(csvFile,
@@ -205,17 +89,15 @@ var drawNullMap = function (csvFile) {
 
 function drawHeatMap() {
     matrixData = OriDestABRGroup.all();
-    
-    obtain2ndLargest();
 
     var matrixTip = d3.tip()
         .attr('class', 'd3-tip')
         .offset([-15, 0])
         .html(function (data) {
-//            console.log(data);
-            var toReturn = "<div style=\"text-align:center;\">Origin: " + convertABRtoCountry(data.key.originABR) + "<br>";
-            toReturn += "<div style=\"text-align:center;\">Destination: " + convertABRtoCountry(data.key.destABR) + "<br>";
-            toReturn += "Passengers: <span>" + numberWithCommas(data.value) + "</span></div>";
+            //            console.log(data);
+            var toReturn = "<div style=\"text-align:center;\">Origin - Destination<br>";
+            toReturn += convertABRtoCountry(data.key.destABR) + " - " + convertABRtoCountry(data.key.originABR);
+            toReturn += "<br>Passengers: <span>" + numberWithCommas(data.value) + "</span></div>";
             return toReturn;
         });
 
@@ -246,11 +128,11 @@ function drawHeatMap() {
         .style("fill", function (d) {
             return colorMatrixScale(d.value);
         });
-    
+
     cards.exit().remove();
 
     var matrixLegendScale = d3.scaleQuantize()
-        .domain([0,100000])
+        .domain([0, 100000])
         .range(["#7acbdc", "#41b6c4", "#1d91c0", "#225ea8", "#253494", "#081d58"]);
 
     var matrixLegendSvg = d3.select("#matrix svg");
@@ -280,17 +162,6 @@ $(document).ready(function () {
         drawNullMap("data/nulldata.csv");
     }, 3000);
 });
-
-function obtain2ndLargest() {
-    var x = 0;
-    var largest = d3.max(matrixData);
-    matrixData.forEach(function (data) {
-        if (data.value > x && data.value != largest) {
-            x = data.value;
-        }
-    });
-    return x;
-}
 
 function loadMatrixData() {
     var OriDestABRDimension = data.flights.dimension(function (d) {
