@@ -499,7 +499,7 @@ var gfx = {
       	}
       });
 
-      this.outPassengerSlider.noUiSlider.on('set', function(values, handle) {
+      this.outPassengerSlider.noUiSlider.on('change', function(values, handle) {
       	outgoingPassengersRange = values;
       	gfx.viz.redraw("main");
       });
@@ -524,7 +524,7 @@ var gfx = {
       	}
       });
 
-      this.inPassengerSlider.noUiSlider.on('set', function(values, handle) {
+      this.inPassengerSlider.noUiSlider.on('change', function(values, handle) {
       	incomingPassengersRange = values;
       	gfx.viz.redraw("main");
       });
@@ -567,13 +567,16 @@ var gfx = {
     reset: function() {
     	// reset all sliders
     	this.set.slider(0,5000000,this.outPassengerSlider);
+    	outgoingPassengersRange = [0,5000000];
     	this.set.slider(0,5000000,this.inPassengerSlider);
+    	incomingPassengersRange = [0,5000000];
     	// clear selection
     	this.stateSelector[0].selectize.clear();
     	stateSelectorValue = [];
     	updateStateFilter(stateSelectorValue);
     	// move passengers view to outgoing
     	// redraw everything
+    	gfx.viz.redraw("main");
     }
 	}
 }

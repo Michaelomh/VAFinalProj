@@ -1,10 +1,10 @@
 //standard attributes
 
-var outerWidth = 980;
-var outerHeight = 150;
+var outerWidth = 940;
+var outerHeight = 120;
 var margin = {
     left: 30,
-    top: 100,
+    top: 20,
     right: 30,
     bottom: 30
 };
@@ -127,12 +127,12 @@ function numberWithCommas(num) {
 
 var scale = d3.scaleLinear()
     .domain([1, 12]) // Data space
-    .range([3, 900]); // Pixel space
+    .range([0, 840]); // Pixel space
 
 
 var MonthViewXaxis = d3.scaleLinear()
     .domain([1, 12])
-    .range([20, 920]);
+    .range([25, 860]);
 
 var MonthViewXscale = d3.scaleOrdinal()
     .domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
@@ -204,7 +204,7 @@ function render(data) {
     // Enter
     rects.enter()
         .append("rect")
-        .attr("y", 70)
+        .attr("y", 40)
         .attr("width", 70)
         .attr("height", 70)
         /*.attr("fill", colors[0])*/
@@ -227,12 +227,12 @@ function render(data) {
 
     //Add SVG Text Element Attributes
     var textLabels = text
-        .attr("y", 50)
+        .attr("y", 30)
         .text(function (data) {
             return convertMonth(data)
         })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "20px")
+        .attr("font-size", "14px")
+        .attr("font-weight", "700")
         .attr("fill", "black");
 
     text.attr("x", MonthViewXaxis);

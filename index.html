@@ -25,24 +25,13 @@
     <script src="js/d3-tip.js"></script>
 
 </head>
-<style>
-    .noUi-background {
-        background-color: black;
-    }
-    
-    .mono {
-        font-size: 150px;
-        font-family: Consolas, courier;
-        fill: #aaa;
-    }
-</style>
 
 <body>
     <div class="container">
-        <div class="row">
+        <div class="row month-container">
             <div class="col-xs-12">
                 <!-- cross filter -->
-                <div id="skipstep" style="width: 900px; margin: 50px auto 0px auto;">
+                <div id="skipstep">
                 </div>
                 <div id="monthView">
 
@@ -54,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row map-container-outer">
             <div class="col-xs-3 controls-container">
                 <h4 class="controls-title">Filter Airports</h4>
                 <h5>Passengers View</h5>
