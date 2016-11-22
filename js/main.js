@@ -607,9 +607,9 @@ var data = {
 				flightsByDate = data.flights.dimension(function(d) {return d.date});
 				flightsByOriginAiports = data.flights.dimension(function(d) {return d['ORIGIN_AIRPORT_ID']});
 				flightsByDestAirports = data.flights.dimension(function(d) {return d['DEST_AIRPORT_ID']});
-        flightsByOriginState = data.flights.dimension(function(d) {return d['ORIGIN_STATE_ABR']});
-        flightsByDestState = data.flights.dimension(function(d) {return d['DEST_STATE_ABR']});
-				flightsByPassengers = data.flights.dimension(function(d) {return d['PASSENGERS']});
+                flightsByOriginState = data.flights.dimension(function(d) {return d['ORIGIN_STATE_ABR']});
+                flightsByDestState = data.flights.dimension(function(d) {return d['DEST_STATE_ABR']});
+				flightsByPassengers = data.flights.dimension(function(d) {return +d['PASSENGERS']});
 				callback();
 			});
 		},
