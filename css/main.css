@@ -105,7 +105,7 @@ textarea {
    ========================================================================== */
 
 body {
-    font-family: "Helvetica-Neue", Helvetica, Arial, sans-serif;
+    font-family: "PT Sans", "Helvetica-Neue", Helvetica, Arial, sans-serif;
 }
 
 .container {
@@ -406,6 +406,10 @@ input:checked + .toggle-slider:before {
 #skipstep {
   margin-left: 39px;
   margin-right: 51px;
+}
+
+.header-top {
+  margin-top: 50px;
 }
 
 
